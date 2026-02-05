@@ -1,286 +1,328 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ruleta de Medicamentos Hospitalarios 🏥💉 para mi amor</title>
+  <meta charset="UTF-8">
+  <title>Ruleta de Medicamentos Hospitalarios</title>
   <style>
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to bottom, #0a1f44, #1e3a8a);
-      color: white;
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
       text-align: center;
+      padding: 20px;
     }
+
     h1 {
-      margin: 20px;
-      color: #ffcc00;
-      text-shadow: 0 0 10px #ffcc00;
+      margin-bottom: 5px;
     }
-    #wheel {
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      background: conic-gradient(
-        #ff3366 0deg 72deg,
-        #33ccff 72deg 144deg,
-        #33ff99 144deg 216deg,
-        #ffcc00 216deg 288deg,
-        #a855f7 288deg 360deg
-      );
+
+    .ruleta-container {
       position: relative;
-      margin: 30px;
-      box-shadow: 0 0 40px rgba(255,255,255,0.5);
-      transition: transform 4.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      width: 300px;
+      height: 300px;
+      margin: 30px auto;
     }
-    #pointer {
+
+    .ruleta {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6px solid #333;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(0deg);
+      transition: transform 3s ease-out;
+    }
+
+    .sector {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      transform-origin: 100% 100%;
+      background: #ddd;
+      border: 1px solid #fff;
+    }
+
+    .sector span {
+      position: absolute;
+      top: 60%;
+      left: 60%;
+      transform: rotate(45deg);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .flecha {
       width: 0;
       height: 0;
-      border-left: 18px solid transparent;
-      border-right: 18px solid transparent;
-      border-bottom: 35px solid #ff3366;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid red;
       position: absolute;
-      top: -28px;
+      top: -30px;
       left: 50%;
       transform: translateX(-50%);
-      filter: drop-shadow(0 0 6px black);
     }
-    #question-container {
-      background: rgba(0,0,0,0.6);
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 600px;
-      margin: 20px;
-      display: none;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
-    }
-    .option {
-      background: #ffffff33;
-      margin: 15px 0;
-      padding: 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.25s;
-      font-size: 1.15em;
-    }
-    .option:hover {
-      background: #ffffff55;
-      transform: scale(1.04);
-    }
-    .correct   { background: #22c55e !important; color: white; font-weight: bold; }
-    .incorrect { background: #ef4444 !important; color: white; }
+
     button {
-      background: #ec4899;
-      border: none;
-      color: white;
-      padding: 16px 50px;
-      font-size: 1.4em;
-      border-radius: 50px;
-      margin: 25px;
+      padding: 10px 20px;
+      font-size: 16px;
       cursor: pointer;
-      box-shadow: 0 6px 20px #ec489966;
-      transition: all 0.2s;
+      margin-top: 20px;
     }
-    button:hover { transform: scale(1.1); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .pregunta {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .opcion {
+      background: #fff;
+      padding: 10px;
+      margin: 8px auto;
+      width: 60%;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .opcion:hover {
+      background: #e9e9e9;
+    }
+
+    .correcta {
+      background: #c8f7c5;
+    }
+
+    .incorrecta {
+      background: #f7c5c5;
+    }
   </style>
 </head>
 <body>
 
-<h1>Ruleta de Medicamentos Hospitalarios 🏥 para mi genio favorito 💕 (20 preguntas!)</h1>
+<h1>Ruleta de Medicamentos Hospitalarios</h1>
+<p>Familia farmacológica y función</p>
 
-<div id="wheel">
-  <div id="pointer"></div>
+<div class="ruleta-container">
+  <div class="flecha"></div>
+  <div class="ruleta" id="ruleta"></div>
 </div>
 
-<button id="spin">¡Girar la ruleta! 🎡</button>
+<button onclick="girarRuleta()">Girar ruleta</button>
 
-<div id="question-container">
-  <h2 id="question"></h2>
-  <div id="options"></div>
-  <button id="next" style="display:none; margin-top:25px;">Siguiente ronda →</button>
+<div class="pregunta" id="zonaPregunta">
+  <h2 id="textoPregunta"></h2>
+  <div id="opciones"></div>
+  <button onclick="siguientePregunta()" id="btnSiguiente" style="display:none;">Siguiente</button>
 </div>
 
 <script>
-// ──────────────────────────────────────────────
-// 20 Preguntas ampliadas (cubre casi toda tu lista + comunes en hospital CR)
-// Correcta siempre índice 0
-const preguntas = [
-  {
-    pregunta: "¿A qué familia pertenece la **Morfina**?",
-    opciones: ["Analgésico opioide fuerte", "AINE", "Benzodiazepina", "Anticoagulante"],
-    correcta: 0
-  },
-  {
-    pregunta: "¿Función principal de la **Enoxaparina**?",
-    opciones: ["Anticoagulante (HBPM)", "Diurético de asa", "Vasopresor", "Antibiótico"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Ceftriaxona** es una:",
-    opciones: ["Cefalosporina 3ª generación", "Penicilina", "Fluoroquinolona", "Macrólido"],
-    correcta: 0
-  },
-  {
-    pregunta: "¿Para qué se usa principalmente la **Noradrenalina**?",
-    opciones: ["Vasopresor en choque", "Analgésico", "Diurético", "Antiemético"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Furosemida** (IV u oral) es un:",
-    opciones: ["Diurético de asa", "IECA", "Bloqueador calcio", "Corticoide"],
-    correcta: 0
-  },
-  {
-    pregunta: "Familia de la **Adrenalina (Epinefrina)**:",
-    opciones: ["Catecolamina / agonista adrenérgico", "Anticolinérgico", "Opioide", "Corticoide"],
-    correcta: 0
-  },
-  {
-    pregunta: "Función principal del **Omeprazol**:",
-    opciones: ["Inhibidor bomba protones (reduce acidez)", "Analgésico", "Anticoagulante", "Broncodilatador"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Insulina simple** es de acción:",
-    opciones: ["Rápida", "Intermedia", "Larga duración", "Oral"],
-    correcta: 0
-  },
-  {
-    pregunta: "Familia del **Tramadol**:",
-    opciones: ["Opioide débil + SNRI-like", "AINE potente", "Corticoide", "Benzodiazepina"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Metoclopramida (Plasil)** es principalmente:",
-    opciones: ["Antiemético procinético", "Diurético", "Antibiótico anaerobio", "Vasopresor"],
-    correcta: 0
-  },
-  {
-    pregunta: "En emergencias, la **Atropina** es un:",
-    opciones: ["Anticolinérgico", "Betabloqueador", "Opioide antagonista", "IECA"],
-    correcta: 0
-  },
-  {
-    pregunta: "Familia de la **Dexametasona**:",
-    opciones: ["Corticosteroide potente", "Analgésico no opioide", "Cefalosporina", "Anticoagulante"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Levotiroxina** se usa para tratar:",
-    opciones: ["Hipotiroidismo (hormona tiroidea T4)", "Hipertiroidismo", "Diabetes", "Hipertensión"],
-    correcta: 0
-  },
-  {
-    pregunta: "Función principal de la **Heparina**:",
-    opciones: ["Anticoagulante (inhibe trombina y Xa)", "Antiagregante plaquetario", "Fibrinolítico", "Diurético"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Amoxicilina** pertenece a:",
-    opciones: ["Penicilinas de amplio espectro", "Cefalosporinas", "Quinolonas", "Macrólidos"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Metformina** es un antidiabético:",
-    opciones: ["Biguanida (reduce producción hepática glucosa)", "Sulfonilurea", "Insulina", "Inhibidor DPP-4"],
-    correcta: 0
-  },
-  {
-    pregunta: "Familia del **Midazolam**:",
-    opciones: ["Benzodiazepina de acción corta (sedación)", "Opioide", "Antipsicótico", "Anticonvulsivo no benzo"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Salbutamol** (Albuterol) es un:",
-    opciones: ["Beta-2 agonista broncodilatador", "Anticolinérgico", "Corticoide inhalado", "Mucolítico"],
-    correcta: 0
-  },
-  {
-    pregunta: "Función principal del **Enalapril**:",
-    opciones: ["IECA (inhibidor ECA)", "ARA-II", "Betabloqueador", "Diurético ahorrador potasio"],
-    correcta: 0
-  },
-  {
-    pregunta: "La **Hidrocortisona** es un:",
-    opciones: ["Corticosteroide sistémico (cortisol)", "AINE", "Antibiótico", "Vasopresor"],
-    correcta: 0
-  }
-  // Puedes agregar más aquí si quieres llegar a 25-30
+/* ===== TEMAS ===== */
+const temas = [
+  "Analgésicos",
+  "Antibióticos",
+  "Cardiovasculares",
+  "Endocrinos",
+  "Gastrointestinales",
+  "Respiratorios"
 ];
 
-let currentQuestion = 0;
+/* ===== PREGUNTAS POR TEMA ===== */
+const bancoPreguntas = {
+  "Analgésicos": [
+    {
+      pregunta: "¿A qué familia pertenece el paracetamol?",
+      opciones: ["Analgésico-antipirético", "Antibiótico", "Corticoide"],
+      correcta: 0
+    },
+    {
+      pregunta: "Función principal de la morfina:",
+      opciones: ["Analgésico opioide potente", "Antiinflamatorio", "Antipirético"],
+      correcta: 0
+    },
+    {
+      pregunta: "El tramadol es:",
+      opciones: ["Analgésico opioide", "Anticoagulante", "Diurético"],
+      correcta: 0
+    }
+  ],
 
-const wheel = document.getElementById("wheel");
-const spinBtn = document.getElementById("spin");
-const questionDiv = document.getElementById("question-container");
-const questionText = document.getElementById("question");
-const optionsDiv = document.getElementById("options");
-const nextBtn = document.getElementById("next");
+  "Antibióticos": [
+    {
+      pregunta: "La ceftriaxona pertenece a:",
+      opciones: ["Cefalosporinas", "Macrólidos", "Aminoglucósidos"],
+      correcta: 0
+    },
+    {
+      pregunta: "El metronidazol es eficaz contra:",
+      opciones: ["Bacterias anaerobias", "Virus", "Hongos"],
+      correcta: 0
+    },
+    {
+      pregunta: "La amoxicilina es un:",
+      opciones: ["Betalactámico", "Quinolona", "Antifúngico"],
+      correcta: 0
+    }
+  ],
 
-function mostrarPregunta(idx) {
-  if (idx >= preguntas.length) {
-    alert("¡Terminaste las 20 preguntas! Eres una experta en meds hospitalarios mi vida 🥰🏆 Puedes reiniciar girando de nuevo.");
-    resetGame();
-    return;
-  }
+  "Cardiovasculares": [
+    {
+      pregunta: "La furosemida es un:",
+      opciones: ["Diurético de asa", "IECA", "Betabloqueador"],
+      correcta: 0
+    },
+    {
+      pregunta: "La adrenalina se usa principalmente para:",
+      opciones: ["Emergencias y paro", "Hipertensión crónica", "Dolor leve"],
+      correcta: 0
+    },
+    {
+      pregunta: "La noradrenalina actúa como:",
+      opciones: ["Vasopresor", "Analgésico", "Sedante"],
+      correcta: 0
+    }
+  ],
 
-  const q = preguntas[idx];
-  questionText.textContent = q.pregunta;
-  optionsDiv.innerHTML = "";
+  "Endocrinos": [
+    {
+      pregunta: "La insulina NPH es:",
+      opciones: ["Acción intermedia", "Acción rápida", "Acción ultralenta"],
+      correcta: 0
+    },
+    {
+      pregunta: "La metformina se usa en:",
+      opciones: ["Diabetes tipo 2", "Hipotiroidismo", "Hipertensión"],
+      correcta: 0
+    },
+    {
+      pregunta: "La levotiroxina reemplaza:",
+      opciones: ["Hormona tiroidea", "Insulina", "Cortisol"],
+      correcta: 0
+    }
+  ],
 
-  q.opciones.forEach((op, i) => {
-    const div = document.createElement("div");
-    div.className = "option";
-    div.textContent = op;
-    div.onclick = () => {
-      if (i === q.correcta) {
-        div.classList.add("correct");
-        alert("¡Correctísimo mi amor! 🔥💖");
-      } else {
-        div.classList.add("incorrect");
-        alert("Uy casi... la correcta era: " + q.opciones[q.correcta]);
-      }
-      document.querySelectorAll(".option").forEach(o => o.onclick = null);
-      nextBtn.style.display = "block";
-    };
-    optionsDiv.appendChild(div);
-  });
+  "Gastrointestinales": [
+    {
+      pregunta: "El omeprazol es un:",
+      opciones: ["Inhibidor de bomba de protones", "Antiemético", "Laxante"],
+      correcta: 0
+    },
+    {
+      pregunta: "La metoclopramida se usa como:",
+      opciones: ["Antiemético", "Analgésico", "Antibiótico"],
+      correcta: 0
+    },
+    {
+      pregunta: "La buscapina es:",
+      opciones: ["Antiespasmódico", "Antiinflamatorio", "Anticoagulante"],
+      correcta: 0
+    }
+  ],
 
-  questionDiv.style.display = "block";
-  spinBtn.disabled = true;
-}
+  "Respiratorios": [
+    {
+      pregunta: "El salbutamol es un:",
+      opciones: ["Broncodilatador", "Antibiótico", "Corticoide"],
+      correcta: 0
+    },
+    {
+      pregunta: "El atrovent actúa como:",
+      opciones: ["Broncodilatador anticolinérgico", "Antihistamínico", "Antitusígeno"],
+      correcta: 0
+    },
+    {
+      pregunta: "La dexametasona es:",
+      opciones: ["Corticoide", "Analgésico", "Antibiótico"],
+      correcta: 0
+    }
+  ]
+};
 
-function resetGame() {
-  currentQuestion = 0;
-  spinBtn.disabled = false;
-  questionDiv.style.display = "none";
-  nextBtn.style.display = "none";
-  wheel.style.transform = "rotate(0deg)";
-}
+/* ===== RUEDA ===== */
+const ruleta = document.getElementById("ruleta");
+const zonaPregunta = document.getElementById("zonaPregunta");
+const textoPregunta = document.getElementById("textoPregunta");
+const opcionesDiv = document.getElementById("opciones");
+const btnSiguiente = document.getElementById("btnSiguiente");
 
-spinBtn.onclick = () => {
-  const randomDeg = Math.floor(Math.random() * 1080) + 1080; // 3-6 vueltas
-  wheel.style.transform = `rotate(${randomDeg}deg)`;
+let preguntasTema = [];
+let indicePregunta = 0;
+let temaActual = "";
+
+/* Crear sectores */
+temas.forEach((tema, i) => {
+  const sector = document.createElement("div");
+  sector.className = "sector";
+  sector.style.transform = `rotate(${i * (360 / temas.length)}deg)`;
+  sector.style.background = i % 2 === 0 ? "#b3d9ff" : "#d1e7dd";
+
+  const texto = document.createElement("span");
+  texto.textContent = tema;
+
+  sector.appendChild(texto);
+  ruleta.appendChild(sector);
+});
+
+function girarRuleta() {
+  zonaPregunta.style.display = "none";
+  btnSiguiente.style.display = "none";
+
+  const vueltas = 3;
+  const angulo = Math.floor(Math.random() * 360);
+  const rotacion = vueltas * 360 + angulo;
+
+  ruleta.style.transform = `rotate(${rotacion}deg)`;
 
   setTimeout(() => {
-    mostrarPregunta(currentQuestion);
-    currentQuestion++;
-  }, 4500);
-};
+    const sector = Math.floor(((360 - angulo) % 360) / (360 / temas.length));
+    temaActual = temas[sector];
+    preguntasTema = [...bancoPreguntas[temaActual]];
+    indicePregunta = 0;
+    mostrarPregunta();
+  }, 3000);
+}
 
-nextBtn.onclick = () => {
-  questionDiv.style.display = "none";
-  nextBtn.style.display = "none";
-  spinBtn.disabled = false;
-  wheel.style.transform = "rotate(0deg)";
-};
+function mostrarPregunta() {
+  const p = preguntasTema[indicePregunta];
+  textoPregunta.textContent = `${temaActual}: ${p.pregunta}`;
+  opcionesDiv.innerHTML = "";
+  zonaPregunta.style.display = "block";
+
+  p.opciones.forEach((op, i) => {
+    const div = document.createElement("div");
+    div.className = "opcion";
+    div.textContent = op;
+    div.onclick = () => seleccionarOpcion(div, i);
+    opcionesDiv.appendChild(div);
+  });
+}
+
+function seleccionarOpcion(div, index) {
+  const p = preguntasTema[indicePregunta];
+  document.querySelectorAll(".opcion").forEach(o => o.onclick = null);
+
+  if (index === p.correcta) {
+    div.classList.add("correcta");
+  } else {
+    div.classList.add("incorrecta");
+    opcionesDiv.children[p.correcta].classList.add("correcta");
+  }
+
+  btnSiguiente.style.display = "inline-block";
+}
+
+function siguientePregunta() {
+  indicePregunta++;
+  btnSiguiente.style.display = "none";
+
+  if (indicePregunta < preguntasTema.length) {
+    mostrarPregunta();
+  } else {
+    alert("Fin de las preguntas de este tema.");
+    zonaPregunta.style.display = "none";
+  }
+}
 </script>
 
 </body>
 </html>
+

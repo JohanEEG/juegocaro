@@ -3,229 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruleta de Medicamentos Hospitalarios 🏥</title>
+  <title>Ruleta de Medicamentos Hospitalarios 🏥💕</title>
   <style>
+    :root {
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --light: #f3f4f6;
+      --dark: #1e293b;
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 20px 10px;
       min-height: 100vh;
+      color: var(--dark);
+      text-align: center;
     }
     h1 {
-      color: #1e40af;
-      margin: 10px 0 5px;
-      font-size: 2em;
+      color: #1d4ed8;
+      margin: 10px 0 4px;
+      font-size: clamp(1.8rem, 6vw, 2.5rem);
     }
-    p.subtitle {
-      color: #4b5563;
-      margin: 0 0 20px;
-      font-size: 1.1em;
-    }
+    .subtitle { color: #4b5563; margin: 0 0 20px; font-size: 1.1rem; }
     .ruleta-container {
       position: relative;
-      width: min(320px, 80vw);
-      height: min(320px, 80vw);
-      margin: 30px auto;
+      width: min(340px, 85vw);
+      height: min(340px, 85vw);
+      margin: 25px auto;
     }
     .ruleta {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 8px solid #1e293b;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border: 10px solid var(--dark);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
       position: relative;
       overflow: hidden;
-      transform: rotate(0deg);
-      transition: transform 4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 4.8s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
     .sector {
       position: absolute;
       width: 50%;
       height: 50%;
       transform-origin: 100% 100%;
-      clip-path: polygon(0 0, 100% 0, 100% 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
     }
     .sector span {
       position: absolute;
-      font-size: 14px;
-      font-weight: bold;
+      font-size: clamp(12px, 3.5vw, 15px);
+      font-weight: 700;
       color: #111827;
-      text-align: center;
-      width: 120px;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.8);
       transform: translate(-50%, -50%) rotate(90deg);
       white-space: nowrap;
+      width: 140px;
+      text-align: center;
     }
     .flecha {
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 40px solid #dc2626;
+      width: 0; height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-bottom: 48px solid #dc2626;
       position: absolute;
-      top: -35px;
+      top: -38px;
       left: 50%;
       transform: translateX(-50%);
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-      z-index: 10;
+      filter: drop-shadow(0 4px 8px #0004);
+      z-index: 5;
     }
+    .controls { margin: 20px 0; }
     button {
-      padding: 12px 30px;
-      font-size: 1.1em;
-      font-weight: bold;
-      cursor: pointer;
+      padding: 12px 28px;
+      font-size: 1.05rem;
+      font-weight: 600;
       border: none;
-      border-radius: 30px;
-      background: #3b82f6;
-      color: white;
-      margin: 15px 10px;
-      transition: all 0.2s;
-    }
-    button:hover {
-      background: #2563eb;
-      transform: translateY(-2px);
-    }
-    button:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-    .pregunta {
-      margin: 30px auto;
-      max-width: 700px;
-      display: none;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .opcion {
-      background: #f3f4f6;
-      padding: 15px;
-      margin: 12px auto;
-      width: 80%;
-      max-width: 500px;
-      border-radius: 10px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: all 0.2s;
-      font-size: 1.05em;
+      transition: all 0.22s;
+      margin: 8px 4px;
     }
-    .opcion:hover {
-      background: #e5e7eb;
-      transform: scale(1.02);
+    .btn-primary   { background: var(--primary); color: white; }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+    .btn-success   { background: var(--success); color: white; }
+    .btn-danger    { background: var(--danger); color: white; }
+    .pregunta-container {
+      margin: 20px auto;
+      max-width: 720px;
+      background: white;
+      border-radius: 16px;
+      padding: 24px 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      display: none;
     }
-    .correcta {
-      background: #86efac !important;
-      color: #065f46;
-      font-weight: bold;
+    .progreso { font-weight: bold; color: #4b5563; margin-bottom: 12px; }
+    .opcion {
+      background: var(--light);
+      padding: 16px 20px;
+      margin: 10px auto;
+      max-width: 540px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-size: 1.05rem;
+      border: 1px solid #d1d5db;
     }
-    .incorrecta {
-      background: #fca5a5 !important;
-      color: #7f1d1d;
+    .opcion:hover { background: #e5e7eb; transform: translateY(-1px); }
+    .correcta { background: #d1fae5 !important; border-color: #10b981; font-weight: 600; }
+    .incorrecta { background: #fee2e2 !important; border-color: #ef4444; }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
     }
-    @media (max-width: 500px) {
-      h1 { font-size: 1.6em; }
-      .pregunta { padding: 15px; }
-      .opcion { width: 95%; padding: 12px; }
+    .modal-content {
+      background: white;
+      padding: 28px 24px;
+      border-radius: 16px;
+      max-width: 90%;
+      width: 420px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      text-align: center;
     }
+    .modal-content h2 { margin: 0 0 16px; color: var(--dark); }
+    .corazones { font-size: 1.8rem; margin: 12px 0; }
   </style>
 </head>
 <body>
 
 <h1>Ruleta de Medicamentos Hospitalarios 🏥</h1>
-<p class="subtitle">Familia farmacológica y función principal</p>
+<p class="subtitle">Familia farmacológica y función principal – ¡Para mi amor! 💕</p>
 
 <div class="ruleta-container">
   <div class="flecha"></div>
   <div class="ruleta" id="ruleta"></div>
 </div>
 
-<button id="btnGirar" onclick="girarRuleta()">Girar ruleta 🎰</button>
+<div class="controls">
+  <button id="btnGirar" class="btn-primary">Girar ruleta 🎡</button>
+</div>
 
-<div class="pregunta" id="zonaPregunta">
+<div class="pregunta-container" id="zonaPregunta">
+  <div class="progreso" id="progreso"></div>
   <h2 id="textoPregunta"></h2>
   <div id="opciones"></div>
-  <button id="btnSiguiente" onclick="siguientePregunta()" style="display:none;">Siguiente pregunta →</button>
+  <div style="margin-top: 24px;">
+    <button id="btnSiguiente" class="btn-primary" style="display:none;">Siguiente →</button>
+  </div>
+</div>
+
+<div class="modal" id="modalFinTema">
+  <div class="modal-content">
+    <h2 id="tituloFin"></h2>
+    <p id="textoFin"></p>
+    <div class="corazones" id="corazones"></div>
+    <button class="btn-primary" onclick="cerrarModalYContinuar()">Girar de nuevo</button>
+  </div>
 </div>
 
 <script>
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────── Datos ──────────────────────────────────────────────
 const temas = [
-  "Analgésicos",
-  "Antibióticos",
-  "Cardiovasculares",
-  "Endocrinos",
-  "Gastrointestinales",
-  "Respiratorios"
+  "Analgésicos", "Antibióticos", "Cardiovasculares",
+  "Endocrinos", "Gastrointestinales", "Respiratorios"
 ];
 
-const bancoPreguntas = { /* tu objeto de preguntas igual que antes */ 
+const bancoPreguntas = { /* Tus preguntas originales – puedes agregar más */
   "Analgésicos": [
     { pregunta: "¿A qué familia pertenece el paracetamol?", opciones: ["Analgésico-antipirético", "Antibiótico", "Corticoide"], correcta: 0 },
     { pregunta: "Función principal de la morfina:", opciones: ["Analgésico opioide potente", "Antiinflamatorio", "Antipirético"], correcta: 0 },
-    { pregunta: "El tramadol es:", opciones: ["Analgésico opioide", "Anticoagulante", "Diurético"], correcta: 0 }
+    { pregunta: "El tramadol es:", opciones: ["Analgésico opioide", "Anticoagulante", "Diurético"], correcta: 0 },
+    { pregunta: "El metamizol sódico se usa principalmente como:", opciones: ["Analgésico y antipirético", "Antiinflamatorio esteroideo", "Opioide fuerte"], correcta: 0 }
   ],
   "Antibióticos": [
-    { pregunta: "La ceftriaxona pertenece a:", opciones: ["Cefalosporinas", "Macrólidos", "Aminoglucósidos"], correcta: 0 },
-    { pregunta: "El metronidazol es eficaz contra:", opciones: ["Bacterias anaerobias", "Virus", "Hongos"], correcta: 0 },
-    { pregunta: "La amoxicilina es un:", opciones: ["Betalactámico", "Quinolona", "Antifúngico"], correcta: 0 }
+    { pregunta: "La ceftriaxona pertenece a:", opciones: ["Cefalosporinas 3ª gen", "Macrólidos", "Aminoglucósidos"], correcta: 0 },
+    { pregunta: "El metronidazol es eficaz contra:", opciones: ["Bacterias anaerobias y protozoarios", "Virus", "Hongos"], correcta: 0 },
+    { pregunta: "La amoxicilina es un:", opciones: ["Betalactámico (penicilina)", "Quinolona", "Antifúngico"], correcta: 0 }
   ],
   "Cardiovasculares": [
     { pregunta: "La furosemida es un:", opciones: ["Diurético de asa", "IECA", "Betabloqueador"], correcta: 0 },
-    { pregunta: "La adrenalina se usa principalmente para:", opciones: ["Emergencias y paro", "Hipertensión crónica", "Dolor leve"], correcta: 0 },
-    { pregunta: "La noradrenalina actúa como:", opciones: ["Vasopresor", "Analgésico", "Sedante"], correcta: 0 }
+    { pregunta: "La adrenalina se usa principalmente para:", opciones: ["Emergencias y paro cardiorrespiratorio", "Hipertensión crónica", "Dolor leve"], correcta: 0 },
+    { pregunta: "La noradrenalina actúa como:", opciones: ["Vasopresor potente", "Analgésico", "Sedante"], correcta: 0 }
   ],
   "Endocrinos": [
     { pregunta: "La insulina NPH es:", opciones: ["Acción intermedia", "Acción rápida", "Acción ultralenta"], correcta: 0 },
     { pregunta: "La metformina se usa en:", opciones: ["Diabetes tipo 2", "Hipotiroidismo", "Hipertensión"], correcta: 0 },
-    { pregunta: "La levotiroxina reemplaza:", opciones: ["Hormona tiroidea", "Insulina", "Cortisol"], correcta: 0 }
+    { pregunta: "La levotiroxina reemplaza:", opciones: ["Hormona tiroidea (T4)", "Insulina", "Cortisol"], correcta: 0 }
   ],
   "Gastrointestinales": [
     { pregunta: "El omeprazol es un:", opciones: ["Inhibidor de bomba de protones", "Antiemético", "Laxante"], correcta: 0 },
-    { pregunta: "La metoclopramida se usa como:", opciones: ["Antiemético", "Analgésico", "Antibiótico"], correcta: 0 },
+    { pregunta: "La metoclopramida se usa como:", opciones: ["Antiemético procinético", "Analgésico", "Antibiótico"], correcta: 0 },
     { pregunta: "La buscapina es:", opciones: ["Antiespasmódico", "Antiinflamatorio", "Anticoagulante"], correcta: 0 }
   ],
   "Respiratorios": [
-    { pregunta: "El salbutamol es un:", opciones: ["Broncodilatador", "Antibiótico", "Corticoide"], correcta: 0 },
+    { pregunta: "El salbutamol es un:", opciones: ["Broncodilatador β2 agonista", "Antibiótico", "Corticoide"], correcta: 0 },
     { pregunta: "El atrovent actúa como:", opciones: ["Broncodilatador anticolinérgico", "Antihistamínico", "Antitusígeno"], correcta: 0 },
-    { pregunta: "La dexametasona es:", opciones: ["Corticoide", "Analgésico", "Antibiótico"], correcta: 0 }
+    { pregunta: "La dexametasona es:", opciones: ["Corticosteroide potente", "Analgésico", "Antibiótico"], correcta: 0 }
   ]
 };
 
-// ──────────────────────────────────────────────
+// ────────────────────────────────────────────── Estado ──────────────────────────────────────────────
 const ruleta = document.getElementById("ruleta");
 const zonaPregunta = document.getElementById("zonaPregunta");
 const textoPregunta = document.getElementById("textoPregunta");
 const opcionesDiv = document.getElementById("opciones");
 const btnSiguiente = document.getElementById("btnSiguiente");
 const btnGirar = document.getElementById("btnGirar");
+const progreso = document.getElementById("progreso");
+const modal = document.getElementById("modalFinTema");
+const tituloFin = document.getElementById("tituloFin");
+const textoFin = document.getElementById("textoFin");
+const corazonesDiv = document.getElementById("corazones");
 
 let preguntasTema = [];
 let indicePregunta = 0;
 let temaActual = "";
+let aciertos = 0;
+let totalEnTema = 0;
+const temasUsadosRecientes = []; // evita repetir tema consecutivo
+const MAX_RECientes = 2; // cuántos temas atrás recordar
 
-// Colores más variados y bonitos para sectores
-const colores = ["#bfdbfe", "#bbf7d0", "#fed7aa", "#fecaca", "#ddd6fe", "#a7f3d0"];
+const coloresSectores = ["#bfdbfe","#bbf7d0","#fed7aa","#fecdd3","#e9d5ff","#a7f3d0"];
 
-// Crear sectores
+// ────────────────────────────────────────────── Crear ruleta ──────────────────────────────────────────────
 temas.forEach((tema, i) => {
   const sector = document.createElement("div");
   sector.className = "sector";
   sector.style.transform = `rotate(${i * (360 / temas.length)}deg)`;
-  sector.style.background = colores[i % colores.length];
+  sector.style.background = coloresSectores[i % coloresSectores.length];
 
-  const texto = document.createElement("span");
-  texto.textContent = tema;
-  sector.appendChild(texto);
+  const span = document.createElement("span");
+  span.textContent = tema;
+  sector.appendChild(span);
   ruleta.appendChild(sector);
 });
 
-// Función para barajar array (Fisher-Yates)
-function shuffleArray(array) {
-  const copy = [...array];
+// ────────────────────────────────────────────── Utilidades ──────────────────────────────────────────────
+function shuffleArray(arr) {
+  const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -233,58 +257,93 @@ function shuffleArray(array) {
   return copy;
 }
 
+function elegirTemaNoRepetido() {
+  let candidatos = temas.filter(t => !temasUsadosRecientes.includes(t));
+  if (candidatos.length === 0) {
+    // Si todos se usaron → reiniciar historial
+    temasUsadosRecientes.length = 0;
+    candidatos = [...temas];
+  }
+  const idx = Math.floor(Math.random() * candidatos.length);
+  const elegido = candidatos[idx];
+  temasUsadosRecientes.push(elegido);
+  if (temasUsadosRecientes.length > MAX_RECientes) temasUsadosRecientes.shift();
+  return elegido;
+}
+
+function mostrarModal(titulo, texto, corazones = "") {
+  tituloFin.textContent = titulo;
+  textoFin.textContent = texto;
+  corazonesDiv.textContent = corazones;
+  modal.style.display = "flex";
+}
+
+function cerrarModalYContinuar() {
+  modal.style.display = "none";
+  zonaPregunta.style.display = "none";
+  aciertos = 0;
+  btnGirar.disabled = false;
+}
+
+// ────────────────────────────────────────────── Lógica principal ──────────────────────────────────────────────
 function girarRuleta() {
+  btnGirar.disabled = true;
   zonaPregunta.style.display = "none";
   btnSiguiente.style.display = "none";
-  btnGirar.disabled = true;
 
-  const vueltas = 5 + Math.random() * 3; // 5 a 8 vueltas
+  const vueltas = 4 + Math.floor(Math.random() * 5); // 4–8 vueltas
   const anguloExtra = Math.random() * 360;
-  const rotacion = vueltas * 360 + anguloExtra;
+  const rotacionTotal = vueltas * 360 + anguloExtra;
 
-  ruleta.style.transform = `rotate(${rotacion}deg)`;
+  ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
 
   setTimeout(() => {
-    // Calcular sector apuntado (ajustado por la rotación)
-    const anguloFinal = rotacion % 360;
-    const sectorIdx = Math.floor((360 - anguloFinal) / (360 / temas.length)) % temas.length;
-    temaActual = temas[sectorIdx];
-
-    preguntasTema = shuffleArray(bancoPreguntas[temaActual]); // barajar orden de preguntas también
+    temaActual = elegirTemaNoRepetido();
+    preguntasTema = shuffleArray(bancoPreguntas[temaActual]);
     indicePregunta = 0;
+    aciertos = 0;
+    totalEnTema = preguntasTema.length;
     mostrarPregunta();
-    btnGirar.disabled = false;
-  }, 4000);
+  }, 4800);
 }
 
 function mostrarPregunta() {
-  if (indicePregunta >= preguntasTema.length) {
-    alert(`¡Terminaste el tema "${temaActual}"! 🎉 Puedes girar de nuevo para otro tema.`);
-    zonaPregunta.style.display = "none";
+  if (indicePregunta >= totalEnTema) {
+    const porcentaje = Math.round((aciertos / totalEnTema) * 100);
+    let mensaje = `¡Terminaste "${temaActual}"! 🎉\n`;
+    mensaje += `Aciertos: ${aciertos}/${totalEnTema} (${porcentaje}%)\n\n`;
+    if (porcentaje >= 90) mensaje += "¡Eres una genia mi amor! Te amo muchísimo 😍💖";
+    else if (porcentaje >= 70) mensaje += "¡Muy bien mi vida! Vas increíble 🔥";
+    else mensaje += "¡Sigue practicando mi reina! Ya casi lo dominas ❤️";
+
+    let hearts = "❤️".repeat(Math.min(Math.ceil(porcentaje / 20), 5));
+    mostrarModal("¡Excelente!", mensaje, hearts);
     return;
   }
 
   const p = preguntasTema[indicePregunta];
-  textoPregunta.textContent = `${temaActual}: ${p.pregunta}`;
+  textoPregunta.textContent = p.pregunta;
+  progreso.textContent = `Pregunta ${indicePregunta + 1} de ${totalEnTema} – Tema: ${temaActual}`;
 
-  // Barajar opciones y recordar nueva posición correcta
   const opcionesBarajadas = shuffleArray(p.opciones);
-  const indiceCorrectoBarajado = opcionesBarajadas.indexOf(p.opciones[p.correcta]);
+  const indiceCorrecto = opcionesBarajadas.indexOf(p.opciones[p.correcta]);
 
   opcionesDiv.innerHTML = "";
   zonaPregunta.style.display = "block";
+  btnSiguiente.style.display = "none";
 
   opcionesBarajadas.forEach((op, i) => {
     const div = document.createElement("div");
     div.className = "opcion";
     div.textContent = op;
     div.onclick = () => {
-      document.querySelectorAll(".opcion").forEach(o => o.onclick = null);
-      if (i === indiceCorrectoBarajado) {
+      opcionesDiv.querySelectorAll(".opcion").forEach(o => o.onclick = null);
+      if (i === indiceCorrecto) {
         div.classList.add("correcta");
+        aciertos++;
       } else {
         div.classList.add("incorrecta");
-        opcionesDiv.children[indiceCorrectoBarajado].classList.add("correcta");
+        opcionesDiv.children[indiceCorrecto].classList.add("correcta");
       }
       btnSiguiente.style.display = "inline-block";
     };
@@ -293,10 +352,13 @@ function mostrarPregunta() {
 }
 
 function siguientePregunta() {
-  btnSiguiente.style.display = "none";
   indicePregunta++;
   mostrarPregunta();
 }
+
+// ────────────────────────────────────────────── Eventos iniciales ──────────────────────────────────────────────
+btnGirar.onclick = girarRuleta;
+btnSiguiente.onclick = siguientePregunta;
 </script>
 </body>
 </html>

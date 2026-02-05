@@ -1,300 +1,358 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ruleta de Medicamentos Hospitalarios</title>
-
-<style>
-:root{
-  --primary:#2563eb;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --bg:#eef2ff;
-  --card:#ffffff;
-  --text:#1e293b;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  padding:20px;
-  font-family:system-ui,-apple-system,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  text-align:center;
-}
-h1{color:#1d4ed8;margin:5px 0}
-.subtitle{color:#475569;margin-bottom:20px}
-
-.ruleta-container{
-  position:relative;
-  width:320px;
-  height:320px;
-  margin:0 auto 20px;
-}
-.ruleta{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  border:8px solid #1e293b;
-  overflow:hidden;
-  transition:transform 4.8s cubic-bezier(.22,.61,.36,1);
-}
-.sector{
-  position:absolute;
-  width:50%;
-  height:50%;
-  transform-origin:100% 100%;
-  clip-path:polygon(0 0,100% 0,100% 100%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.sector span{
-  transform:translate(-50%,-50%) rotate(90deg);
-  font-size:12px;
-  font-weight:700;
-  width:130px;
-}
-.flecha{
-  position:absolute;
-  top:-30px;
-  left:50%;
-  transform:translateX(-50%);
-  width:0;height:0;
-  border-left:18px solid transparent;
-  border-right:18px solid transparent;
-  border-bottom:40px solid var(--danger);
-  z-index:5;
-}
-
-button{
-  border:none;
-  padding:12px 26px;
-  border-radius:999px;
-  font-size:1rem;
-  font-weight:600;
-  cursor:pointer;
-  margin:5px;
-}
-.primary{background:var(--primary);color:white}
-.primary:hover{background:#1d4ed8}
-
-.mute{background:#e5e7eb}
-
-.card{
-  background:var(--card);
-  max-width:720px;
-  margin:20px auto;
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-  display:none;
-}
-.opcion{
-  background:#f1f5f9;
-  margin:10px auto;
-  padding:14px;
-  max-width:520px;
-  border-radius:12px;
-  cursor:pointer;
-  border:1px solid #cbd5f5;
-}
-.opcion:hover{background:#e0e7ff}
-.correcta{background:#dcfce7;border-color:var(--success);font-weight:700}
-.incorrecta{background:#fee2e2;border-color:var(--danger)}
-
-.progreso{font-weight:600;color:#475569;margin-bottom:10px}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.modal-content{
-  background:white;
-  padding:30px;
-  border-radius:18px;
-  max-width:400px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruleta de Medicamentos Hospitalarios</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --light: #f3f4f6;
+      --dark: #1e293b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+      margin: 0;
+      padding: 20px 10px;
+      min-height: 100vh;
+      color: var(--dark);
+      text-align: center;
+    }
+    h1 { color: #1d4ed8; margin: 10px 0 4px; font-size: clamp(1.8rem, 6vw, 2.5rem); }
+    .subtitle { color: #4b5563; margin: 0 0 20px; font-size: 1.1rem; }
+    .ruleta-container { position: relative; width: min(340px, 85vw); height: min(340px, 85vw); margin: 25px auto; }
+    .ruleta { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--dark); box-shadow: 0 10px 40px rgba(0,0,0,0.25); position: relative; overflow: hidden; transition: transform 4.8s cubic-bezier(0.22, 0.61, 0.36, 1); }
+    .sector { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; display: flex; align-items: center; justify-content: center; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+    .sector span { position: absolute; font-size: clamp(12px, 3.5vw, 15px); font-weight: 700; color: #111827; text-shadow: 0 1px 3px rgba(255,255,255,0.8); transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap; width: 140px; text-align: center; }
+    .flecha { width: 0; height: 0; border-left: 22px solid transparent; border-right: 22px solid transparent; border-bottom: 48px solid #dc2626; position: absolute; top: -38px; left: 50%; transform: translateX(-50%); filter: drop-shadow(0 4px 8px #0004); z-index: 5; }
+    .controls { margin: 20px 0; }
+    button { padding: 12px 28px; font-size: 1.05rem; font-weight: 600; border: none; border-radius: 999px; cursor: pointer; transition: all 0.22s; margin: 8px 4px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+    .pregunta-container { margin: 20px auto; max-width: 720px; background: white; border-radius: 16px; padding: 24px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: none; }
+    .progreso { font-weight: bold; color: #4b5563; margin-bottom: 12px; }
+    .opcion { background: var(--light); padding: 16px 20px; margin: 10px auto; max-width: 540px; border-radius: 12px; cursor: pointer; transition: all 0.18s; font-size: 1.05rem; border: 1px solid #d1d5db; }
+    .opcion:hover { background: #e5e7eb; transform: translateY(-1px); }
+    .correcta { background: #d1fae5 !important; border-color: #10b981; font-weight: 600; }
+    .incorrecta { background: #fee2e2 !important; border-color: #ef4444; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-content { background: white; padding: 28px 24px; border-radius: 16px; max-width: 90%; width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; }
+    .modal-content h2 { margin: 0 0 16px; color: var(--dark); }
+  </style>
 </head>
-
 <body>
 
 <h1>Ruleta de Medicamentos Hospitalarios</h1>
-<p class="subtitle">Familia farmacológica y función</p>
+<p class="subtitle">Familia farmacológica y función principal</p>
 
 <div class="ruleta-container">
   <div class="flecha"></div>
   <div class="ruleta" id="ruleta"></div>
 </div>
 
-<button id="btnGirar" class="primary">Girar ruleta</button>
-<button class="mute" onclick="toggleMute()">🔊 / 🔇</button>
+<div class="controls">
+  <button id="btnGirar" class="btn-primary">Girar ruleta</button>
+</div>
 
-<div class="card" id="zonaPregunta">
+<div class="pregunta-container" id="zonaPregunta">
   <div class="progreso" id="progreso"></div>
   <h2 id="textoPregunta"></h2>
   <div id="opciones"></div>
-  <button id="btnSiguiente" class="primary" style="display:none">Siguiente</button>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h2 id="tituloModal"></h2>
-    <p id="textoModal"></p>
-    <button class="primary" onclick="cerrarModal()">Continuar</button>
+  <div style="margin-top: 24px;">
+    <button id="btnSiguiente" class="btn-primary" style="display:none;">Siguiente pregunta</button>
   </div>
 </div>
 
-<!-- Sonidos -->
-<audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1938.mp3"></audio>
-<audio id="okSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
-<audio id="failSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
-<audio id="endSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+<div class="modal" id="modalFinTema">
+  <div class="modal-content">
+    <h2 id="tituloFin"></h2>
+    <p id="textoFin"></p>
+    <button class="btn-primary" onclick="cerrarModalYContinuar()">Girar de nuevo</button>
+  </div>
+</div>
+
+<!-- Sonidos actualizados - enlaces directos estables de Mixkit -->
+<audio id="soundSpin" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1938.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundCorrect" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundIncorrect" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-// 🔓 desbloqueo audio
-let unlocked=false;
-document.addEventListener("click",()=>{
-  if(unlocked) return;
-  [spinSound,okSound,failSound,endSound].forEach(a=>{
-    a.volume=.6;
-    a.play().then(()=>{a.pause();a.currentTime=0});
-  });
-  unlocked=true;
-},{once:true});
-
-// mute
-let muted=false;
-function toggleMute(){
-  muted=!muted;
-  [spinSound,okSound,failSound,endSound].forEach(a=>a.muted=muted);
-}
-
-// datos
-const temas=[
-"Analgésicos","Antibióticos","Cardiovasculares","Diuréticos",
-"Endocrinos","Gastrointestinales","Respiratorios",
-"Corticoides","Emergencias","Anticoagulantes"
+// Datos con ~100 preguntas distribuidas
+const temas = [
+  "Analgésicos y Antipiréticos",
+  "Antibióticos y Antimicrobianos",
+  "Cardiovasculares y Antihipertensivos",
+  "Diuréticos",
+  "Endocrinos y Antidiabéticos",
+  "Gastrointestinales y Antieméticos",
+  "Respiratorios y Broncodilatadores",
+  "Corticoides y Antiinflamatorios Esteroideos",
+  "Vasopresores, Inotrópicos y Emergencias",
+  "Anticoagulantes, Sedantes y Otros"
 ];
 
-const preguntas={
-"Analgésicos":[
-{q:"Paracetamol es:",o:["Analgésico-antipirético","AINE","Opioide"],c:0},
-{q:"Morfina:",o:["Opioide fuerte","AINE","Antibiótico"],c:0}
-],
-"Antibióticos":[
-{q:"Ceftriaxona:",o:["Cefalosporina 3ª gen","Penicilina","Quinolona"],c:0},
-{q:"Metronidazol cubre:",o:["Anaerobios","Virus","Hongos"],c:0}
-],
-"Cardiovasculares":[
-{q:"Enalapril es:",o:["IECA","ARA-II","Diurético"],c:0},
-{q:"Amlodipino:",o:["BCC","IECA","Betabloqueador"],c:0}
-],
-"Diuréticos":[
-{q:"Furosemida:",o:["Diurético de asa","Tiazida","Ahorrador K"],c:0}
-],
-"Endocrinos":[
-{q:"Insulina NPH:",o:["Intermedia","Rápida","Lenta"],c:0}
-],
-"Gastrointestinales":[
-{q:"Omeprazol:",o:["IBP","Antiemético","AINE"],c:0}
-],
-"Respiratorios":[
-{q:"Salbutamol:",o:["Beta-2 agonista","Corticoide","Anticolinérgico"],c:0}
-],
-"Corticoides":[
-{q:"Dexametasona:",o:["Corticoide potente","AINE","Opioide"],c:0}
-],
-"Emergencias":[
-{q:"Adrenalina:",o:["Anafilaxia","Hipertensión","Dolor"],c:0}
-],
-"Anticoagulantes":[
-{q:"Enoxaparina:",o:["HBPM","Antiagregante","Fibrinolítico"],c:0}
-]
+const bancoPreguntas = {
+  "Analgésicos y Antipiréticos": [
+    { pregunta: "¿Familia del Paracetamol?", opciones: ["Analgésico-antipirético no opioide", "AINE", "Opioide", "Corticoide"], correcta: 0 },
+    { pregunta: "Función principal Metamizol sódico:", opciones: ["Analgésico y antipirético pirazolona", "Antiinflamatorio", "Sedante", "Anticoagulante"], correcta: 0 },
+    { pregunta: "Tramadol pertenece a:", opciones: ["Opioide débil + inhibidor recaptación", "AINE potente", "Corticoide", "Antibiótico"], correcta: 0 },
+    { pregunta: "Morfina función principal:", opciones: ["Analgésico opioide fuerte dolor severo", "Antipirético", "Antiinflamatorio", "Diurético"], correcta: 0 },
+    { pregunta: "Ibuprofeno es:", opciones: ["AINE", "Opioide", "Antipirético puro", "Sedante"], correcta: 0 },
+    { pregunta: "Diclofenaco clasificación:", opciones: ["AINE", "Opioide", "Corticoide", "Analgésico central"], correcta: 0 },
+    { pregunta: "Aspirina dosis baja uso:", opciones: ["Antiagregante plaquetario", "Analgésico potente", "Antibiótico", "Diurético"], correcta: 0 },
+    { pregunta: "Paracetamol vía común hospital:", opciones: ["Oral / IV", "IM", "Inhalada", "Tópica"], correcta: 0 },
+    { pregunta: "Precaución principal morfina:", opciones: ["Depresión respiratoria", "Hipertensión", "Hiperglucemia", "Arritmias"], correcta: 0 },
+    { pregunta: "Metamizol riesgo conocido:", opciones: ["Agranulocitosis", "Sangrado GI", "Insuficiencia renal", "Bradicardia"], correcta: 0 }
+  ],
+  "Antibióticos y Antimicrobianos": [
+    { pregunta: "Ceftriaxona generación:", opciones: ["3ª generación cefalosporina", "1ª generación", "Penicilina", "Quinolona"], correcta: 0 },
+    { pregunta: "Metronidazol cobertura:", opciones: ["Anaerobios y protozoarios", "Virus", "Hongos", "Gram+ exclusivo"], correcta: 0 },
+    { pregunta: "Amoxicilina familia:", opciones: ["Penicilina amplio espectro", "Cefalosporina", "Fluoroquinolona", "Macrólido"], correcta: 0 },
+    { pregunta: "Ciprofloxacina familia:", opciones: ["Fluoroquinolona", "Penicilina", "Cefalosporina", "Aminoglucósido"], correcta: 0 },
+    { pregunta: "Ampicilina cobertura:", opciones: ["Amplio espectro penicilina", "Pseudomonas exclusiva", "Anaerobios", "Hongos"], correcta: 0 },
+    { pregunta: "Ceftazidima fuerte contra:", opciones: ["Pseudomonas", "MRSA", "Virus", "Hongos"], correcta: 0 },
+    { pregunta: "Keflin (Cefalotina):", opciones: ["1ª generación cefalosporina", "3ª generación", "Carbapenem", "Penicilina"], correcta: 0 },
+    { pregunta: "Ceftriaxona vía típica:", opciones: ["IV / IM", "Oral", "Inhalada", "Tópica"], correcta: 0 },
+    { pregunta: "Precaución fluoroquinolonas:", opciones: ["Tendinopatía / ruptura tendón", "Agranulocitosis", "Depresión respiratoria", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Metronidazol efecto adverso común:", opciones: ["Sabor metálico y náuseas", "Fotosensibilidad", "Ototoxicidad", "Nefrotoxicidad"], correcta: 0 }
+  ],
+  "Cardiovasculares y Antihipertensivos": [
+    { pregunta: "Enalapril familia:", opciones: ["IECA", "ARA-II", "BCC", "Betabloqueador"], correcta: 0 },
+    { pregunta: "Irbesartán familia:", opciones: ["ARA-II", "IECA", "Diurético", "Vasopresor"], correcta: 0 },
+    { pregunta: "Amlodipino:", opciones: ["Bloqueador canales calcio dihidropiridina", "IECA", "Betabloqueador", "Alfa-bloqueador"], correcta: 0 },
+    { pregunta: "Amiodarona clase:", opciones: ["Antiarrítmico clase III", "Clase I", "Clase II", "Clase IV"], correcta: 0 },
+    { pregunta: "Lidocaína clase:", opciones: ["Antiarrítmico Ib", "Ia", "III", "IV"], correcta: 0 },
+    { pregunta: "Precaución amiodarona:", opciones: ["Toxicidad pulmonar y tiroidea", "Hipotensión severa", "Hiperkalemia", "Broncoespasmo"], correcta: 0 },
+    { pregunta: "Amlodipino efecto adverso común:", opciones: ["Edema tobillos", "Tos seca", "Bradicardia", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Enalapril efecto adverso:", opciones: ["Tos seca por bradicinina", "Edema", "Taquicardia", "Hipoglucemia"], correcta: 0 },
+    { pregunta: "Lidocaína uso principal:", opciones: ["Arritmias ventriculares", "Hipertensión", "Bradicardia", "Edema"], correcta: 0 },
+    { pregunta: "Irbesartán ventaja vs IECA:", opciones: ["No produce tos", "Más potente", "Diurético añadido", "Vasodilatador directo"], correcta: 0 }
+  ],
+  "Diuréticos": [
+    { pregunta: "Furosemida familia:", opciones: ["Diurético de asa", "Tiazídico", "Ahorrador potasio", "Osmótico"], correcta: 0 },
+    { pregunta: "Uso principal furosemida:", opciones: ["Edema e insuficiencia cardíaca", "Hipertensión leve", "Hipokalemia", "Glaucoma"], correcta: 0 },
+    { pregunta: "Efecto adverso furosemida:", opciones: ["Hipokalemia e hiponatremia", "Hiperkalemia", "Hipercalcemia", "Acidosis"], correcta: 0 },
+    { pregunta: "Vía común furosemida hospital:", opciones: ["IV para acción rápida", "Oral exclusiva", "IM", "Inhalada"], correcta: 0 },
+    { pregunta: "Monitoreo clave furosemida:", opciones: ["Electrolitos y función renal", "Presión arterial solo", "Glucosa", "Tiroidea"], correcta: 0 },
+    { pregunta: "Furosemida oral vs IV:", opciones: ["IV inicio más rápido y biodisponibilidad 100%", "Oral más potente", "IV más lenta", "No diferencia"], correcta: 0 }
+  ],
+  "Endocrinos y Antidiabéticos": [
+    { pregunta: "Levotiroxina función:", opciones: ["Reemplazo T4 hipotiroidismo", "Diabetes", "Hipertiroidismo", "Suprarrenal"], correcta: 0 },
+    { pregunta: "Insulina NPH acción:", opciones: ["Intermedia", "Rápida", "Ultralenta", "Oral"], correcta: 0 },
+    { pregunta: "Insulina simple acción:", opciones: ["Rápida", "Intermedia", "Larga", "Basal"], correcta: 0 },
+    { pregunta: "Metformina mecanismo:", opciones: ["Reduce producción hepática glucosa", "Estimula secreción insulina", "Inhibe DPP-4", "Bloquea SGLT2"], correcta: 0 },
+    { pregunta: "Precaución metformina:", opciones: ["Acidosis láctica en insuficiencia renal", "Hipoglucemia severa", "Hiperkalemia", "Tos"], correcta: 0 },
+    { pregunta: "Levotiroxina monitoreo:", opciones: ["TSH y T4 libre", "Glucosa", "Electrolitos", "Presión arterial"], correcta: 0 },
+    { pregunta: "Insulina simple uso típico:", opciones: ["Corrección hiperglucemia y bolo prandial", "Basal nocturno", "Larga duración", "Oral"], correcta: 0 },
+    { pregunta: "NPH pico acción:", opciones: ["4-12 horas", "30 min-2 h", "24-36 h", "Inmediato"], correcta: 0 }
+  ],
+  "Gastrointestinales y Antieméticos": [
+    { pregunta: "Omeprazol familia:", opciones: ["IBP", "Antiemético", "Antiespasmódico", "Laxante"], correcta: 0 },
+    { pregunta: "Metoclopramida función:", opciones: ["Antiemético procinético", "Analgésico", "Antibiótico", "Diurético"], correcta: 0 },
+    { pregunta: "Gravol (Dimenhidrinato):", opciones: ["Antiemético antihistamínico", "IBP", "Procinético", "Antiespasmódico"], correcta: 0 },
+    { pregunta: "Buscapina función:", opciones: ["Antiespasmódico GI", "Antiemético", "Antiinflamatorio", "Anticoagulante"], correcta: 0 },
+    { pregunta: "Loratadina:", opciones: ["Antihistamínico H1 2ª gen no sedante", "Corticoide", "Sedante", "Antibiótico"], correcta: 0 },
+    { pregunta: "Omeprazol uso hospital:", opciones: ["Profilaxis úlcera estrés", "Dolor", "Hipertensión", "Sedación"], correcta: 0 },
+    { pregunta: "Metoclopramida precaución:", opciones: ["Síndrome extrapiramidal", "Hipotensión", "Hiperglucemia", "Bradicardia"], correcta: 0 },
+    { pregunta: "Buscapina vía común:", opciones: ["IV / IM / oral", "Inhalada", "Tópica", "Rectal"], correcta: 0 },
+    { pregunta: "Gravol uso principal:", opciones: ["Mareo y náuseas", "Dolor abdominal", "Acidez", "Estreñimiento"], correcta: 0 }
+  ],
+  "Respiratorios y Broncodilatadores": [
+    { pregunta: "Salbutamol familia:", opciones: ["Beta-2 agonista corto acción", "Anticolinérgico", "Corticoide", "Mucolítico"], correcta: 0 },
+    { pregunta: "Atrovent (Ipratropio):", opciones: ["Anticolinérgico broncodilatador", "Beta-2 agonista", "Corticoide inhalado", "Antileucotrieno"], correcta: 0 },
+    { pregunta: "Salbutamol uso hospital:", opciones: ["Crisis asmática / EPOC aguda", "Profilaxis crónica", "Hipertensión pulmonar", "Edema"], correcta: 0 },
+    { pregunta: "Atrovent efecto adverso común:", opciones: ["Boca seca", "Taquicardia", "Temblor", "Hipokalemia"], correcta: 0 },
+    { pregunta: "Combinación típica crisis asmática:", opciones: ["Salbutamol + Ipratropio", "Corticoide solo", "Antibiótico", "Sedante"], correcta: 0 },
+    { pregunta: "Salbutamol vía hospital:", opciones: ["Nebulizada / inhalador MDI", "IV exclusiva", "Oral", "IM"], correcta: 0 }
+  ],
+  "Corticoides y Antiinflamatorios Esteroideos": [
+    { pregunta: "Hidrocortisona equivalente:", opciones: ["Cortisol fisiológico", "Prednisona x5", "Dexametasona x30", "Betametasona"], correcta: 0 },
+    { pregunta: "Prednisolona uso:", opciones: ["Corticoide oral antiinflamatorio", "AINE", "Opioide", "Antibiótico"], correcta: 0 },
+    { pregunta: "Solumedrol función:", opciones: ["Corticoide IV potente", "Analgésico", "Diurético", "Sedante"], correcta: 0 },
+    { pregunta: "Dexametasona potencia:", opciones: ["Alta antiinflamatoria y mínima mineralocorticoide", "Baja potencia", "Solo mineralocorticoide", "AINE"], correcta: 0 },
+    { pregunta: "Hidrocortisona uso emergencia:", opciones: ["Shock suprarrenal / anafilaxia", "Dolor", "Hipertensión", "Arritmias"], correcta: 0 },
+    { pregunta: "Precaución corticoides prolongados:", opciones: ["Osteoporosis, hiperglucemia, inmunosupresión", "Hipoglucemia", "Hipotensión", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Dexametasona uso común:", opciones: ["Edema cerebral, náuseas quimio, COVID moderado", "Dolor leve", "Sedación", "Antibiótico"], correcta: 0 }
+  ],
+  "Vasopresores, Inotrópicos y Emergencias": [
+    { pregunta: "Adrenalina indicación principal:", opciones: ["Anafilaxia y paro", "Hipertensión crónica", "Dolor", "Sedación"], correcta: 0 },
+    { pregunta: "Dopamina efecto dosis baja:", opciones: ["Dopaminérgico renal", "Vasopresor alfa", "Inotrópico beta", "Sedante"], correcta: 0 },
+    { pregunta: "Noradrenalina acción principal:", opciones: ["Vasopresor alfa > beta", "Broncodilatador", "Sedante", "Analgésico"], correcta: 0 },
+    { pregunta: "Atropina indicación:", opciones: ["Bradicardia y organofosforados", "Taquicardia", "Hipertensión", "Dolor"], correcta: 0 },
+    { pregunta: "Adrenalina dosis anafilaxia:", opciones: ["0.3-0.5 mg IM", "1 mg IV", "10 mg oral", "100 mcg inhalado"], correcta: 0 },
+    { pregunta: "Noradrenalina monitoreo:", opciones: ["Presión arterial invasiva", "Solo no invasiva", "Glucosa", "Electrolitos"], correcta: 0 },
+    { pregunta: "Dopamina riesgo:", opciones: ["Arritmias y necrosis tisular extravasación", "Hipotensión", "Hiperkalemia", "Broncoespasmo"], correcta: 0 }
+  ],
+  "Anticoagulantes, Sedantes y Otros": [
+    { pregunta: "Enoxaparina tipo:", opciones: ["HBPM", "Anticoagulante oral", "Fibrinolítico", "Antiagregante"], correcta: 0 },
+    { pregunta: "Heparina no fraccionada:", opciones: ["Anticoagulante IV monitoreo TTPa", "Oral", "Directo Xa", "Antiagregante"], correcta: 0 },
+    { pregunta: "Diazepam familia:", opciones: ["Benzodiazepina", "Opioide", "Antipsicótico", "Barbitúrico"], correcta: 0 },
+    { pregunta: "Midazolam ventaja:", opciones: ["Acción corta sedación", "Larga duración", "No sedante", "Analgésico"], correcta: 0 },
+    { pregunta: "Enoxaparina monitoreo:", opciones: ["No rutinario (anti-Xa en casos especiales)", "TTPa diario", "INR", "Electrolitos"], correcta: 0 },
+    { pregunta: "Diazepam uso hospital:", opciones: ["Convulsiones, ansiedad, abstinencia alcohol", "Dolor", "Hipertensión", "Arritmias"], correcta: 0 },
+    { pregunta: "Midazolam vía común UCI:", opciones: ["IV continuo o bolos", "Oral", "IM", "Inhalada"], correcta: 0 },
+    { pregunta: "Heparina precaución:", opciones: ["Trombocitopenia inducida heparina (HIT)", "Hiperkalemia", "Broncoespasmo", "Sedación"], correcta: 0 },
+    { pregunta: "Enoxaparina dosis típica:", opciones: ["1 mg/kg SC c/12h", "5000 UI IV", "10 mg oral", "100 UI/kg/h"], correcta: 0 }
+  ]
 };
 
-// ruleta
-const ruleta=document.getElementById("ruleta");
-const colores=["#bfdbfe","#bbf7d0","#fed7aa","#fecaca","#ddd6fe"];
-temas.forEach((t,i)=>{
-  const s=document.createElement("div");
-  s.className="sector";
-  s.style.background=colores[i%colores.length];
-  s.style.transform=`rotate(${i*(360/temas.length)}deg)`;
-  const sp=document.createElement("span");
-  sp.textContent=t;
-  s.appendChild(sp);
-  ruleta.appendChild(s);
+// Resto del script exactamente igual al anterior (sonidos, shuffle, elegirTemaNoRepetido, girarRuleta, mostrarPregunta, etc.)
+// Copia desde "const soundSpin = ..." hasta el final del script de la versión anterior que te di
+
+const soundSpin = document.getElementById("soundSpin");
+const soundCorrect = document.getElementById("soundCorrect");
+const soundIncorrect = document.getElementById("soundIncorrect");
+
+const ruleta = document.getElementById("ruleta");
+const zonaPregunta = document.getElementById("zonaPregunta");
+const textoPregunta = document.getElementById("textoPregunta");
+const opcionesDiv = document.getElementById("opciones");
+const btnSiguiente = document.getElementById("btnSiguiente");
+const btnGirar = document.getElementById("btnGirar");
+const progreso = document.getElementById("progreso");
+const modal = document.getElementById("modalFinTema");
+const tituloFin = document.getElementById("tituloFin");
+const textoFin = document.getElementById("textoFin");
+
+let preguntasTema = [];
+let indicePregunta = 0;
+let temaActual = "";
+let aciertos = 0;
+let totalEnTema = 0;
+const temasUsadosRecientes = [];
+const MAX_RECientes = 2;
+
+const coloresSectores = ["#bfdbfe","#bbf7d0","#fed7aa","#fecdd3","#e9d5ff","#a7f3d0","#c7d2fe","#fed7aa","#fecaca","#ddd6fe"];
+
+temas.forEach((tema, i) => {
+  const sector = document.createElement("div");
+  sector.className = "sector";
+  sector.style.transform = `rotate(${i * (360 / temas.length)}deg)`;
+  sector.style.background = coloresSectores[i % coloresSectores.length];
+  const span = document.createElement("span");
+  span.textContent = tema;
+  sector.appendChild(span);
+  ruleta.appendChild(sector);
 });
 
-// juego
-let temaActual="",lista=[],i=0,ok=0;
-const btnGirar=document.getElementById("btnGirar");
-const zona=document.getElementById("zonaPregunta");
-const texto=document.getElementById("textoPregunta");
-const opcionesDiv=document.getElementById("opciones");
-const prog=document.getElementById("progreso");
-const btnSig=document.getElementById("btnSiguiente");
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
-btnGirar.onclick=()=>{
-  btnGirar.disabled=true;
-  spinSound.currentTime=0; spinSound.play();
-  const rot=1440+Math.random()*360;
-  ruleta.style.transform=`rotate(${rot}deg)`;
-  setTimeout(()=>{
-    temaActual=temas[Math.floor(Math.random()*temas.length)];
-    lista=[...preguntas[temaActual]];
-    i=0; ok=0;
-    mostrar();
-  },4800);
-};
+function elegirTemaNoRepetido() {
+  let candidatos = temas.filter(t => !temasUsadosRecientes.includes(t));
+  if (candidatos.length === 0) {
+    temasUsadosRecientes.length = 0;
+    candidatos = [...temas];
+  }
+  const idx = Math.floor(Math.random() * candidatos.length);
+  const elegido = candidatos[idx];
+  temasUsadosRecientes.push(elegido);
+  if (temasUsadosRecientes.length > MAX_RECientes) temasUsadosRecientes.shift();
+  return elegido;
+}
 
-function mostrar(){
-  if(i>=lista.length){
-    endSound.play();
-    modal("Fin del tema",`Aciertos: ${ok}/${lista.length}`);
+function mostrarModal(titulo, texto) {
+  tituloFin.textContent = titulo;
+  textoFin.textContent = texto;
+  modal.style.display = "flex";
+}
+
+function cerrarModalYContinuar() {
+  modal.style.display = "none";
+  zonaPregunta.style.display = "none";
+  aciertos = 0;
+  btnGirar.disabled = false;
+}
+
+function girarRuleta() {
+  btnGirar.disabled = true;
+  zonaPregunta.style.display = "none";
+  btnSiguiente.style.display = "none";
+
+  soundSpin.currentTime = 0;
+  soundSpin.play().catch(() => {});
+
+  const vueltas = 4 + Math.floor(Math.random() * 5);
+  const anguloExtra = Math.random() * 360;
+  const rotacionTotal = vueltas * 360 + anguloExtra;
+
+  ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
+
+  setTimeout(() => {
+    temaActual = elegirTemaNoRepetido();
+    preguntasTema = shuffleArray(bancoPreguntas[temaActual]);
+    indicePregunta = 0;
+    aciertos = 0;
+    totalEnTema = preguntasTema.length;
+    mostrarPregunta();
+  }, 4800);
+}
+
+function mostrarPregunta() {
+  if (indicePregunta >= totalEnTema) {
+    const porcentaje = Math.round((aciertos / totalEnTema) * 100);
+    const mensaje = `Tema "${temaActual}" completado.\nAciertos: ${aciertos} de ${totalEnTema} (${porcentaje}%)`;
+    mostrarModal("Fin del tema", mensaje);
     return;
   }
-  zona.style.display="block";
-  const p=lista[i];
-  texto.textContent=p.q;
-  prog.textContent=`${temaActual} – Pregunta ${i+1}/${lista.length}`;
-  opcionesDiv.innerHTML="";
-  btnSig.style.display="none";
-  const ops=[...p.o].sort(()=>Math.random()-.5);
-  const idx=ops.indexOf(p.o[p.c]);
-  ops.forEach((op,j)=>{
-    const d=document.createElement("div");
-    d.className="opcion";
-    d.textContent=op;
-    d.onclick=()=>{
-      document.querySelectorAll(".opcion").forEach(x=>x.onclick=null);
-      if(j===idx){d.classList.add("correcta");ok++;okSound.play();}
-      else{d.classList.add("incorrecta");failSound.play();}
-      btnSig.style.display="inline-block";
+
+  const p = preguntasTema[indicePregunta];
+  textoPregunta.textContent = p.pregunta;
+  progreso.textContent = `Pregunta ${indicePregunta + 1} de ${totalEnTema} – ${temaActual}`;
+
+  const opcionesBarajadas = shuffleArray(p.opciones);
+  const indiceCorrecto = opcionesBarajadas.indexOf(p.opciones[p.correcta]);
+
+  opcionesDiv.innerHTML = "";
+  zonaPregunta.style.display = "block";
+  btnSiguiente.style.display = "none";
+
+  opcionesBarajadas.forEach((op, i) => {
+    const div = document.createElement("div");
+    div.className = "opcion";
+    div.textContent = op;
+    div.onclick = () => {
+      opcionesDiv.querySelectorAll(".opcion").forEach(o => o.onclick = null);
+      if (i === indiceCorrecto) {
+        div.classList.add("correcta");
+        aciertos++;
+        soundCorrect.currentTime = 0;
+        soundCorrect.play().catch(() => {});
+      } else {
+        div.classList.add("incorrecta");
+        opcionesDiv.children[indiceCorrecto].classList.add("correcta");
+        soundIncorrect.currentTime = 0;
+        soundIncorrect.play().catch(() => {});
+      }
+      btnSiguiente.style.display = "inline-block";
     };
-    opcionesDiv.appendChild(d);
+    opcionesDiv.appendChild(div);
   });
 }
 
-btnSig.onclick=()=>{i++;mostrar();};
+function siguientePregunta() {
+  indicePregunta++;
+  mostrarPregunta();
+}
 
-function modal(t,m){
-  document.getElementById("tituloModal").textContent=t;
-  document.getElementById("textoModal").textContent=m;
-  document.getElementById("modal").style.display="flex";
-}
-function cerrarModal(){
-  document.getElementById("modal").style.display="none";
-  zona.style.display="none";
-  btnGirar.disabled=false;
-}
+btnGirar.onclick = girarRuleta;
+btnSiguiente.onclick = siguientePregunta;
 </script>
 </body>
 </html>

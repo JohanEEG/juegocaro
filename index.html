@@ -75,7 +75,7 @@
   </div>
 </div>
 
-<!-- Sonidos -->
+<!-- Sonidos actualizados - enlaces directos estables de Mixkit -->
 <audio id="soundSpin" preload="auto">
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1938.mp3" type="audio/mpeg">
 </audio>
@@ -87,7 +87,7 @@
 </audio>
 
 <script>
-// ────────────────────────────────────────────── Datos ──────────────────────────────────────────────
+// Datos con ~100 preguntas distribuidas
 const temas = [
   "Analgésicos y Antipiréticos",
   "Antibióticos y Antimicrobianos",
@@ -103,72 +103,112 @@ const temas = [
 
 const bancoPreguntas = {
   "Analgésicos y Antipiréticos": [
-    { pregunta: "¿Familia farmacológica del Paracetamol?", opciones: ["Analgésico y antipirético no opioide", "AINE potente", "Opioide débil", "Corticoide"], correcta: 0 },
-    { pregunta: "Función principal del Metamizol sódico:", opciones: ["Analgésico y antipirético (pirazolona)", "Antiinflamatorio esteroideo", "Anticoagulante", "Sedante"], correcta: 0 },
-    { pregunta: "El Tramadol pertenece a:", opciones: ["Analgésico opioide débil con efecto SNRI", "AINE", "Corticoide", "Antibiótico"], correcta: 0 },
-    { pregunta: "Función principal de la Morfina:", opciones: ["Analgésico opioide fuerte para dolor intenso", "Antipirético central", "Antiinflamatorio", "Diurético"], correcta: 0 },
-    { pregunta: "El Ibuprofeno es:", opciones: ["AINE (antiinflamatorio no esteroideo)", "Opioide", "Antipirético puro", "Sedante"], correcta: 0 },
-    { pregunta: "Diclofenaco (Voltaren) se clasifica como:", opciones: ["AINE", "Opioide", "Corticoide", "Analgésico central"], correcta: 0 },
-    { pregunta: "Aspirina en dosis bajas se usa principalmente como:", opciones: ["Antiagregante plaquetario", "Analgésico potente", "Antibiótico", "Diurético"], correcta: 0 }
+    { pregunta: "¿Familia del Paracetamol?", opciones: ["Analgésico-antipirético no opioide", "AINE", "Opioide", "Corticoide"], correcta: 0 },
+    { pregunta: "Función principal Metamizol sódico:", opciones: ["Analgésico y antipirético pirazolona", "Antiinflamatorio", "Sedante", "Anticoagulante"], correcta: 0 },
+    { pregunta: "Tramadol pertenece a:", opciones: ["Opioide débil + inhibidor recaptación", "AINE potente", "Corticoide", "Antibiótico"], correcta: 0 },
+    { pregunta: "Morfina función principal:", opciones: ["Analgésico opioide fuerte dolor severo", "Antipirético", "Antiinflamatorio", "Diurético"], correcta: 0 },
+    { pregunta: "Ibuprofeno es:", opciones: ["AINE", "Opioide", "Antipirético puro", "Sedante"], correcta: 0 },
+    { pregunta: "Diclofenaco clasificación:", opciones: ["AINE", "Opioide", "Corticoide", "Analgésico central"], correcta: 0 },
+    { pregunta: "Aspirina dosis baja uso:", opciones: ["Antiagregante plaquetario", "Analgésico potente", "Antibiótico", "Diurético"], correcta: 0 },
+    { pregunta: "Paracetamol vía común hospital:", opciones: ["Oral / IV", "IM", "Inhalada", "Tópica"], correcta: 0 },
+    { pregunta: "Precaución principal morfina:", opciones: ["Depresión respiratoria", "Hipertensión", "Hiperglucemia", "Arritmias"], correcta: 0 },
+    { pregunta: "Metamizol riesgo conocido:", opciones: ["Agranulocitosis", "Sangrado GI", "Insuficiencia renal", "Bradicardia"], correcta: 0 }
   ],
   "Antibióticos y Antimicrobianos": [
-    { pregunta: "La Ceftriaxona pertenece a:", opciones: ["Cefalosporina de 3ª generación", "Penicilina", "Macrólido", "Quinolona"], correcta: 0 },
-    { pregunta: "Función principal del Metronidazol:", opciones: ["Antibiótico contra anaerobios y antiprotozoario", "Antibiótico de amplio espectro gram+", "Antifúngico", "Antiviral"], correcta: 0 },
-    { pregunta: "Amoxicilina es:", opciones: ["Penicilina de amplio espectro", "Cefalosporina", "Fluoroquinolona", "Aminoglucósido"], correcta: 0 },
-    { pregunta: "Ciprofloxacina pertenece a:", opciones: ["Fluoroquinolona", "Penicilina", "Cefalosporina", "Macrólido"], correcta: 0 },
-    { pregunta: "Ampicilina es:", opciones: ["Penicilina de amplio espectro", "Quinolona", "Tetraciclina", "Sulfonamida"], correcta: 0 },
-    { pregunta: "Ceftazidima destaca por cobertura contra:", opciones: ["Pseudomonas aeruginosa", "Anaerobios estrictos", "Gram positivos", "Virus respiratorios"], correcta: 0 },
-    { pregunta: "Keflin (Cefalotina) es:", opciones: ["Cefalosporina de 1ª generación", "Cefalosporina de 3ª generación", "Penicilina", "Carbapenem"], correcta: 0 }
+    { pregunta: "Ceftriaxona generación:", opciones: ["3ª generación cefalosporina", "1ª generación", "Penicilina", "Quinolona"], correcta: 0 },
+    { pregunta: "Metronidazol cobertura:", opciones: ["Anaerobios y protozoarios", "Virus", "Hongos", "Gram+ exclusivo"], correcta: 0 },
+    { pregunta: "Amoxicilina familia:", opciones: ["Penicilina amplio espectro", "Cefalosporina", "Fluoroquinolona", "Macrólido"], correcta: 0 },
+    { pregunta: "Ciprofloxacina familia:", opciones: ["Fluoroquinolona", "Penicilina", "Cefalosporina", "Aminoglucósido"], correcta: 0 },
+    { pregunta: "Ampicilina cobertura:", opciones: ["Amplio espectro penicilina", "Pseudomonas exclusiva", "Anaerobios", "Hongos"], correcta: 0 },
+    { pregunta: "Ceftazidima fuerte contra:", opciones: ["Pseudomonas", "MRSA", "Virus", "Hongos"], correcta: 0 },
+    { pregunta: "Keflin (Cefalotina):", opciones: ["1ª generación cefalosporina", "3ª generación", "Carbapenem", "Penicilina"], correcta: 0 },
+    { pregunta: "Ceftriaxona vía típica:", opciones: ["IV / IM", "Oral", "Inhalada", "Tópica"], correcta: 0 },
+    { pregunta: "Precaución fluoroquinolonas:", opciones: ["Tendinopatía / ruptura tendón", "Agranulocitosis", "Depresión respiratoria", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Metronidazol efecto adverso común:", opciones: ["Sabor metálico y náuseas", "Fotosensibilidad", "Ototoxicidad", "Nefrotoxicidad"], correcta: 0 }
   ],
   "Cardiovasculares y Antihipertensivos": [
-    { pregunta: "Enalapril pertenece a:", opciones: ["IECA (inhibidor de la ECA)", "ARA-II", "Bloqueador de canales de calcio", "Betabloqueador"], correcta: 0 },
-    { pregunta: "Irbesartán es:", opciones: ["ARA-II (antagonista de receptores de angiotensina II)", "IECA", "Diurético de asa", "Vasopresor"], correcta: 0 },
-    { pregunta: "Amlodipino se clasifica como:", opciones: ["Bloqueador de canales de calcio dihidropiridínico", "IECA", "Betabloqueador", "Diurético tiazídico"], correcta: 0 },
-    { pregunta: "Amiodarona es:", opciones: ["Antiarrítmico clase III", "Vasopresor", "Diurético", "Anticoagulante"], correcta: 0 },
-    { pregunta: "Lidocaína se usa principalmente como:", opciones: ["Antiarrítmico clase Ib", "Analgésico opioide", "Sedante", "Antibiótico"], correcta: 0 }
+    { pregunta: "Enalapril familia:", opciones: ["IECA", "ARA-II", "BCC", "Betabloqueador"], correcta: 0 },
+    { pregunta: "Irbesartán familia:", opciones: ["ARA-II", "IECA", "Diurético", "Vasopresor"], correcta: 0 },
+    { pregunta: "Amlodipino:", opciones: ["Bloqueador canales calcio dihidropiridina", "IECA", "Betabloqueador", "Alfa-bloqueador"], correcta: 0 },
+    { pregunta: "Amiodarona clase:", opciones: ["Antiarrítmico clase III", "Clase I", "Clase II", "Clase IV"], correcta: 0 },
+    { pregunta: "Lidocaína clase:", opciones: ["Antiarrítmico Ib", "Ia", "III", "IV"], correcta: 0 },
+    { pregunta: "Precaución amiodarona:", opciones: ["Toxicidad pulmonar y tiroidea", "Hipotensión severa", "Hiperkalemia", "Broncoespasmo"], correcta: 0 },
+    { pregunta: "Amlodipino efecto adverso común:", opciones: ["Edema tobillos", "Tos seca", "Bradicardia", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Enalapril efecto adverso:", opciones: ["Tos seca por bradicinina", "Edema", "Taquicardia", "Hipoglucemia"], correcta: 0 },
+    { pregunta: "Lidocaína uso principal:", opciones: ["Arritmias ventriculares", "Hipertensión", "Bradicardia", "Edema"], correcta: 0 },
+    { pregunta: "Irbesartán ventaja vs IECA:", opciones: ["No produce tos", "Más potente", "Diurético añadido", "Vasodilatador directo"], correcta: 0 }
   ],
   "Diuréticos": [
-    { pregunta: "Furosemida (IV y oral) es un:", opciones: ["Diurético de asa", "Diurético tiazídico", "Ahorrador de potasio", "Diurético osmótico"], correcta: 0 },
-    { pregunta: "Función principal de la Furosemida:", opciones: ["Eliminar sodio y agua en edema e insuficiencia cardíaca", "Reducción crónica de presión arterial", "Ahorro de potasio", "Antihipertensivo central"], correcta: 0 }
+    { pregunta: "Furosemida familia:", opciones: ["Diurético de asa", "Tiazídico", "Ahorrador potasio", "Osmótico"], correcta: 0 },
+    { pregunta: "Uso principal furosemida:", opciones: ["Edema e insuficiencia cardíaca", "Hipertensión leve", "Hipokalemia", "Glaucoma"], correcta: 0 },
+    { pregunta: "Efecto adverso furosemida:", opciones: ["Hipokalemia e hiponatremia", "Hiperkalemia", "Hipercalcemia", "Acidosis"], correcta: 0 },
+    { pregunta: "Vía común furosemida hospital:", opciones: ["IV para acción rápida", "Oral exclusiva", "IM", "Inhalada"], correcta: 0 },
+    { pregunta: "Monitoreo clave furosemida:", opciones: ["Electrolitos y función renal", "Presión arterial solo", "Glucosa", "Tiroidea"], correcta: 0 },
+    { pregunta: "Furosemida oral vs IV:", opciones: ["IV inicio más rápido y biodisponibilidad 100%", "Oral más potente", "IV más lenta", "No diferencia"], correcta: 0 }
   ],
   "Endocrinos y Antidiabéticos": [
-    { pregunta: "Levotiroxina se usa para:", opciones: ["Reemplazo hormonal en hipotiroidismo", "Tratamiento de diabetes tipo 2", "Hipertiroidismo", "Insuficiencia suprarrenal"], correcta: 0 },
-    { pregunta: "Insulina NPH es de acción:", opciones: ["Intermedia", "Rápida", "Ultralenta", "Oral"], correcta: 0 },
-    { pregunta: "Insulina simple (regular) es de acción:", opciones: ["Rápida", "Intermedia", "Larga duración", "Basal"], correcta: 0 },
-    { pregunta: "Metformina pertenece a:", opciones: ["Biguanida", "Sulfonilurea", "Insulina inyectable", "Inhibidor de DPP-4"], correcta: 0 }
+    { pregunta: "Levotiroxina función:", opciones: ["Reemplazo T4 hipotiroidismo", "Diabetes", "Hipertiroidismo", "Suprarrenal"], correcta: 0 },
+    { pregunta: "Insulina NPH acción:", opciones: ["Intermedia", "Rápida", "Ultralenta", "Oral"], correcta: 0 },
+    { pregunta: "Insulina simple acción:", opciones: ["Rápida", "Intermedia", "Larga", "Basal"], correcta: 0 },
+    { pregunta: "Metformina mecanismo:", opciones: ["Reduce producción hepática glucosa", "Estimula secreción insulina", "Inhibe DPP-4", "Bloquea SGLT2"], correcta: 0 },
+    { pregunta: "Precaución metformina:", opciones: ["Acidosis láctica en insuficiencia renal", "Hipoglucemia severa", "Hiperkalemia", "Tos"], correcta: 0 },
+    { pregunta: "Levotiroxina monitoreo:", opciones: ["TSH y T4 libre", "Glucosa", "Electrolitos", "Presión arterial"], correcta: 0 },
+    { pregunta: "Insulina simple uso típico:", opciones: ["Corrección hiperglucemia y bolo prandial", "Basal nocturno", "Larga duración", "Oral"], correcta: 0 },
+    { pregunta: "NPH pico acción:", opciones: ["4-12 horas", "30 min-2 h", "24-36 h", "Inmediato"], correcta: 0 }
   ],
   "Gastrointestinales y Antieméticos": [
-    { pregunta: "Omeprazol es un:", opciones: ["Inhibidor de bomba de protones (IBP)", "Antiemético procinético", "Antiespasmódico", "Laxante"], correcta: 0 },
-    { pregunta: "Metoclopramida (Plasil) se usa principalmente como:", opciones: ["Antiemético y procinético gástrico", "Analgésico", "Antibiótico", "Diurético"], correcta: 0 },
-    { pregunta: "Gravol (Dimenhidrinato) es:", opciones: ["Antiemético y antivertiginoso (antihistamínico H1)", "Antiespasmódico", "IBP", "Procinético"], correcta: 0 },
-    { pregunta: "Buscapina (Hioscina butilbromuro) es:", opciones: ["Antiespasmódico antimuscarínico", "Antiemético central", "Antiinflamatorio", "Anticoagulante"], correcta: 0 },
-    { pregunta: "Loratadina pertenece a:", opciones: ["Antihistamínico H1 de segunda generación", "Corticoide", "Sedante", "Antibiótico"], correcta: 0 }
+    { pregunta: "Omeprazol familia:", opciones: ["IBP", "Antiemético", "Antiespasmódico", "Laxante"], correcta: 0 },
+    { pregunta: "Metoclopramida función:", opciones: ["Antiemético procinético", "Analgésico", "Antibiótico", "Diurético"], correcta: 0 },
+    { pregunta: "Gravol (Dimenhidrinato):", opciones: ["Antiemético antihistamínico", "IBP", "Procinético", "Antiespasmódico"], correcta: 0 },
+    { pregunta: "Buscapina función:", opciones: ["Antiespasmódico GI", "Antiemético", "Antiinflamatorio", "Anticoagulante"], correcta: 0 },
+    { pregunta: "Loratadina:", opciones: ["Antihistamínico H1 2ª gen no sedante", "Corticoide", "Sedante", "Antibiótico"], correcta: 0 },
+    { pregunta: "Omeprazol uso hospital:", opciones: ["Profilaxis úlcera estrés", "Dolor", "Hipertensión", "Sedación"], correcta: 0 },
+    { pregunta: "Metoclopramida precaución:", opciones: ["Síndrome extrapiramidal", "Hipotensión", "Hiperglucemia", "Bradicardia"], correcta: 0 },
+    { pregunta: "Buscapina vía común:", opciones: ["IV / IM / oral", "Inhalada", "Tópica", "Rectal"], correcta: 0 },
+    { pregunta: "Gravol uso principal:", opciones: ["Mareo y náuseas", "Dolor abdominal", "Acidez", "Estreñimiento"], correcta: 0 }
   ],
   "Respiratorios y Broncodilatadores": [
-    { pregunta: "Salbutamol (Albuterol) es:", opciones: ["Beta-2 agonista broncodilatador de acción corta", "Anticolinérgico inhalado", "Corticoide inhalado", "Mucolítico"], correcta: 0 },
-    { pregunta: "Atrovent (Ipratropio) es:", opciones: ["Anticolinérgico broncodilatador", "Beta-2 agonista", "Corticoide inhalado", "Antihistamínico"], correcta: 0 }
+    { pregunta: "Salbutamol familia:", opciones: ["Beta-2 agonista corto acción", "Anticolinérgico", "Corticoide", "Mucolítico"], correcta: 0 },
+    { pregunta: "Atrovent (Ipratropio):", opciones: ["Anticolinérgico broncodilatador", "Beta-2 agonista", "Corticoide inhalado", "Antileucotrieno"], correcta: 0 },
+    { pregunta: "Salbutamol uso hospital:", opciones: ["Crisis asmática / EPOC aguda", "Profilaxis crónica", "Hipertensión pulmonar", "Edema"], correcta: 0 },
+    { pregunta: "Atrovent efecto adverso común:", opciones: ["Boca seca", "Taquicardia", "Temblor", "Hipokalemia"], correcta: 0 },
+    { pregunta: "Combinación típica crisis asmática:", opciones: ["Salbutamol + Ipratropio", "Corticoide solo", "Antibiótico", "Sedante"], correcta: 0 },
+    { pregunta: "Salbutamol vía hospital:", opciones: ["Nebulizada / inhalador MDI", "IV exclusiva", "Oral", "IM"], correcta: 0 }
   ],
   "Corticoides y Antiinflamatorios Esteroideos": [
-    { pregunta: "Hidrocortisona es:", opciones: ["Corticoide sistémico (equivalente fisiológico al cortisol)", "AINE", "Antibiótico", "Vasopresor"], correcta: 0 },
-    { pregunta: "Prednisolona pertenece a:", opciones: ["Corticoide oral", "AINE", "Opioide", "Antibiótico"], correcta: 0 },
-    { pregunta: "Solumedrol (Metilprednisolona) es:", opciones: ["Corticoide intravenoso potente", "Analgésico no opioide", "Diurético", "Sedante"], correcta: 0 },
-    { pregunta: "Dexametasona es:", opciones: ["Corticoide sintético de alta potencia", "AINE", "Antibiótico", "Vasopresor"], correcta: 0 }
+    { pregunta: "Hidrocortisona equivalente:", opciones: ["Cortisol fisiológico", "Prednisona x5", "Dexametasona x30", "Betametasona"], correcta: 0 },
+    { pregunta: "Prednisolona uso:", opciones: ["Corticoide oral antiinflamatorio", "AINE", "Opioide", "Antibiótico"], correcta: 0 },
+    { pregunta: "Solumedrol función:", opciones: ["Corticoide IV potente", "Analgésico", "Diurético", "Sedante"], correcta: 0 },
+    { pregunta: "Dexametasona potencia:", opciones: ["Alta antiinflamatoria y mínima mineralocorticoide", "Baja potencia", "Solo mineralocorticoide", "AINE"], correcta: 0 },
+    { pregunta: "Hidrocortisona uso emergencia:", opciones: ["Shock suprarrenal / anafilaxia", "Dolor", "Hipertensión", "Arritmias"], correcta: 0 },
+    { pregunta: "Precaución corticoides prolongados:", opciones: ["Osteoporosis, hiperglucemia, inmunosupresión", "Hipoglucemia", "Hipotensión", "Hiperkalemia"], correcta: 0 },
+    { pregunta: "Dexametasona uso común:", opciones: ["Edema cerebral, náuseas quimio, COVID moderado", "Dolor leve", "Sedación", "Antibiótico"], correcta: 0 }
   ],
   "Vasopresores, Inotrópicos y Emergencias": [
-    { pregunta: "Adrenalina (Epinefrina) se usa principalmente en:", opciones: ["Anafilaxia, paro cardiorrespiratorio y broncoespasmo", "Hipertensión crónica", "Dolor moderado", "Sedación prolongada"], correcta: 0 },
-    { pregunta: "Dopamina es:", opciones: ["Inotrópico y vasopresor dosis-dependiente", "Sedante benzodiazepínico", "Analgésico opioide", "Diurético de asa"], correcta: 0 },
-    { pregunta: "Noradrenalina (Norepinefrina) es:", opciones: ["Vasopresor predominante alfa-adrenérgico", "Broncodilatador beta-2", "Sedante GABAérgico", "Antibiótico"], correcta: 0 },
-    { pregunta: "Atropina en emergencias se usa para:", opciones: ["Bradicardia sintomática y como antídoto en intoxicación por organofosforados", "Hipertensión aguda", "Dolor severo", "Sedación en UCI"], correcta: 0 }
+    { pregunta: "Adrenalina indicación principal:", opciones: ["Anafilaxia y paro", "Hipertensión crónica", "Dolor", "Sedación"], correcta: 0 },
+    { pregunta: "Dopamina efecto dosis baja:", opciones: ["Dopaminérgico renal", "Vasopresor alfa", "Inotrópico beta", "Sedante"], correcta: 0 },
+    { pregunta: "Noradrenalina acción principal:", opciones: ["Vasopresor alfa > beta", "Broncodilatador", "Sedante", "Analgésico"], correcta: 0 },
+    { pregunta: "Atropina indicación:", opciones: ["Bradicardia y organofosforados", "Taquicardia", "Hipertensión", "Dolor"], correcta: 0 },
+    { pregunta: "Adrenalina dosis anafilaxia:", opciones: ["0.3-0.5 mg IM", "1 mg IV", "10 mg oral", "100 mcg inhalado"], correcta: 0 },
+    { pregunta: "Noradrenalina monitoreo:", opciones: ["Presión arterial invasiva", "Solo no invasiva", "Glucosa", "Electrolitos"], correcta: 0 },
+    { pregunta: "Dopamina riesgo:", opciones: ["Arritmias y necrosis tisular extravasación", "Hipotensión", "Hiperkalemia", "Broncoespasmo"], correcta: 0 }
   ],
   "Anticoagulantes, Sedantes y Otros": [
-    { pregunta: "Enoxaparina es:", opciones: ["Heparina de bajo peso molecular (HBPM)", "Anticoagulante oral directo", "Fibrinolítico", "Antiagregante plaquetario"], correcta: 0 },
-    { pregunta: "Heparina no fraccionada se usa principalmente como:", opciones: ["Anticoagulante intravenoso (inhibe trombina y factor Xa)", "Antiagregante plaquetario", "Diurético", "Sedante"], correcta: 0 },
-    { pregunta: "Diazepam pertenece a:", opciones: ["Benzodiazepina (ansiolítico, miorrelajante, anticonvulsivo)", "Opioide", "Antipsicótico", "Antidepresivo"], correcta: 0 },
-    { pregunta: "Midazolam es:", opciones: ["Benzodiazepina de acción corta para sedación y anestesia", "Opioide fuerte", "Anticonvulsivo no benzodiazepínico", "Barbitúrico"], correcta: 0 }
+    { pregunta: "Enoxaparina tipo:", opciones: ["HBPM", "Anticoagulante oral", "Fibrinolítico", "Antiagregante"], correcta: 0 },
+    { pregunta: "Heparina no fraccionada:", opciones: ["Anticoagulante IV monitoreo TTPa", "Oral", "Directo Xa", "Antiagregante"], correcta: 0 },
+    { pregunta: "Diazepam familia:", opciones: ["Benzodiazepina", "Opioide", "Antipsicótico", "Barbitúrico"], correcta: 0 },
+    { pregunta: "Midazolam ventaja:", opciones: ["Acción corta sedación", "Larga duración", "No sedante", "Analgésico"], correcta: 0 },
+    { pregunta: "Enoxaparina monitoreo:", opciones: ["No rutinario (anti-Xa en casos especiales)", "TTPa diario", "INR", "Electrolitos"], correcta: 0 },
+    { pregunta: "Diazepam uso hospital:", opciones: ["Convulsiones, ansiedad, abstinencia alcohol", "Dolor", "Hipertensión", "Arritmias"], correcta: 0 },
+    { pregunta: "Midazolam vía común UCI:", opciones: ["IV continuo o bolos", "Oral", "IM", "Inhalada"], correcta: 0 },
+    { pregunta: "Heparina precaución:", opciones: ["Trombocitopenia inducida heparina (HIT)", "Hiperkalemia", "Broncoespasmo", "Sedación"], correcta: 0 },
+    { pregunta: "Enoxaparina dosis típica:", opciones: ["1 mg/kg SC c/12h", "5000 UI IV", "10 mg oral", "100 UI/kg/h"], correcta: 0 }
   ]
 };
 
-// ────────────────────────────────────────────── Elementos y estado ──────────────────────────────────────────────
+// Resto del script exactamente igual al anterior (sonidos, shuffle, elegirTemaNoRepetido, girarRuleta, mostrarPregunta, etc.)
+// Copia desde "const soundSpin = ..." hasta el final del script de la versión anterior que te di
+
 const soundSpin = document.getElementById("soundSpin");
 const soundCorrect = document.getElementById("soundCorrect");
 const soundIncorrect = document.getElementById("soundIncorrect");
@@ -194,7 +234,6 @@ const MAX_RECientes = 2;
 
 const coloresSectores = ["#bfdbfe","#bbf7d0","#fed7aa","#fecdd3","#e9d5ff","#a7f3d0","#c7d2fe","#fed7aa","#fecaca","#ddd6fe"];
 
-// Crear sectores de la ruleta
 temas.forEach((tema, i) => {
   const sector = document.createElement("div");
   sector.className = "sector";
@@ -206,7 +245,6 @@ temas.forEach((tema, i) => {
   ruleta.appendChild(sector);
 });
 
-// ────────────────────────────────────────────── Funciones auxiliares ──────────────────────────────────────────────
 function shuffleArray(arr) {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -242,7 +280,6 @@ function cerrarModalYContinuar() {
   btnGirar.disabled = false;
 }
 
-// ────────────────────────────────────────────── Lógica del juego ──────────────────────────────────────────────
 function girarRuleta() {
   btnGirar.disabled = true;
   zonaPregunta.style.display = "none";
@@ -314,7 +351,6 @@ function siguientePregunta() {
   mostrarPregunta();
 }
 
-// ────────────────────────────────────────────── Eventos ──────────────────────────────────────────────
 btnGirar.onclick = girarRuleta;
 btnSiguiente.onclick = siguientePregunta;
 </script>

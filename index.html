@@ -45,19 +45,15 @@
   </style>
 </head>
 <body>
-
 <h1>Ruleta de Medicamentos Hospitalarios</h1>
 <p class="subtitle">Familia farmacológica y función principal</p>
-
 <div class="ruleta-container">
   <div class="flecha"></div>
   <div class="ruleta" id="ruleta"></div>
 </div>
-
 <div class="controls">
   <button id="btnGirar" class="btn-primary">Girar ruleta</button>
 </div>
-
 <div class="pregunta-container" id="zonaPregunta">
   <div class="progreso" id="progreso"></div>
   <h2 id="textoPregunta"></h2>
@@ -66,7 +62,6 @@
     <button id="btnSiguiente" class="btn-primary" style="display:none;">Siguiente pregunta</button>
   </div>
 </div>
-
 <div class="modal" id="modalFinTema">
   <div class="modal-content">
     <h2 id="tituloFin"></h2>
@@ -75,7 +70,7 @@
   </div>
 </div>
 
-<!-- Sonidos actualizados - enlaces directos estables de Mixkit -->
+<!-- Sonidos -->
 <audio id="soundSpin" preload="auto">
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1938.mp3" type="audio/mpeg">
 </audio>
@@ -87,7 +82,6 @@
 </audio>
 
 <script>
-// Datos con ~100 preguntas distribuidas
 const temas = [
   "Analgésicos y Antipiréticos",
   "Antibióticos y Antimicrobianos",
@@ -124,7 +118,11 @@ const bancoPreguntas = {
     { pregunta: "Keflin (Cefalotina):", opciones: ["1ª generación cefalosporina", "3ª generación", "Carbapenem", "Penicilina"], correcta: 0 },
     { pregunta: "Ceftriaxona vía típica:", opciones: ["IV / IM", "Oral", "Inhalada", "Tópica"], correcta: 0 },
     { pregunta: "Precaución fluoroquinolonas:", opciones: ["Tendinopatía / ruptura tendón", "Agranulocitosis", "Depresión respiratoria", "Hiperkalemia"], correcta: 0 },
-    { pregunta: "Metronidazol efecto adverso común:", opciones: ["Sabor metálico y náuseas", "Fotosensibilidad", "Ototoxicidad", "Nefrotoxicidad"], correcta: 0 }
+    { pregunta: "Metronidazol efecto adverso común:", opciones: ["Sabor metálico y náuseas", "Fotosensibilidad", "Ototoxicidad", "Nefrotoxicidad"], correcta: 0 },
+    // Agregadas: Clindamicina
+    { pregunta: "¿Familia farmacológica de la Clindamicina?", opciones: ["Lincosamida", "Penicilina", "Cefalosporina", "Fluoroquinolona"], correcta: 0 },
+    { pregunta: "Función principal de la Clindamicina:", opciones: ["Trata infecciones bacterianas (anaerobios, Gram+ como MRSA)", "Antiviral", "Antifúngico", "Antiinflamatorio"], correcta: 0 },
+    { pregunta: "Clindamicina cobertura principal:", opciones: ["Anaerobios y Gram positivos (incluye algunos resistentes)", "Pseudomonas", "Virus", "Hongos"], correcta: 0 }
   ],
   "Cardiovasculares y Antihipertensivos": [
     { pregunta: "Enalapril familia:", opciones: ["IECA", "ARA-II", "BCC", "Betabloqueador"], correcta: 0 },
@@ -136,7 +134,11 @@ const bancoPreguntas = {
     { pregunta: "Amlodipino efecto adverso común:", opciones: ["Edema tobillos", "Tos seca", "Bradicardia", "Hiperkalemia"], correcta: 0 },
     { pregunta: "Enalapril efecto adverso:", opciones: ["Tos seca por bradicinina", "Edema", "Taquicardia", "Hipoglucemia"], correcta: 0 },
     { pregunta: "Lidocaína uso principal:", opciones: ["Arritmias ventriculares", "Hipertensión", "Bradicardia", "Edema"], correcta: 0 },
-    { pregunta: "Irbesartán ventaja vs IECA:", opciones: ["No produce tos", "Más potente", "Diurético añadido", "Vasodilatador directo"], correcta: 0 }
+    { pregunta: "Irbesartán ventaja vs IECA:", opciones: ["No produce tos", "Más potente", "Diurético añadido", "Vasodilatador directo"], correcta: 0 },
+    // Agregadas: Carvedilol
+    { pregunta: "¿Familia farmacológica de Carvedilol?", opciones: ["Betabloqueador no selectivo con bloqueo alfa-1", "IECA", "BCC dihidropiridina", "Diurético"], correcta: 0 },
+    { pregunta: "Función principal de Carvedilol:", opciones: ["Reduce presión arterial y frecuencia cardíaca, mejora función cardíaca en insuficiencia", "Broncodilatador", "Diurético potente", "Antiarrítmico clase III"], correcta: 0 },
+    { pregunta: "Carvedilol ventaja vs betabloqueadores puros:", opciones: ["Acción vasodilatadora adicional (bloqueo alfa)", "Mayor efecto inotrópico", "Efecto diurético", "Sedante"], correcta: 0 }
   ],
   "Diuréticos": [
     { pregunta: "Furosemida familia:", opciones: ["Diurético de asa", "Tiazídico", "Ahorrador potasio", "Osmótico"], correcta: 0 },
@@ -165,7 +167,11 @@ const bancoPreguntas = {
     { pregunta: "Omeprazol uso hospital:", opciones: ["Profilaxis úlcera estrés", "Dolor", "Hipertensión", "Sedación"], correcta: 0 },
     { pregunta: "Metoclopramida precaución:", opciones: ["Síndrome extrapiramidal", "Hipotensión", "Hiperglucemia", "Bradicardia"], correcta: 0 },
     { pregunta: "Buscapina vía común:", opciones: ["IV / IM / oral", "Inhalada", "Tópica", "Rectal"], correcta: 0 },
-    { pregunta: "Gravol uso principal:", opciones: ["Mareo y náuseas", "Dolor abdominal", "Acidez", "Estreñimiento"], correcta: 0 }
+    { pregunta: "Gravol uso principal:", opciones: ["Mareo y náuseas", "Dolor abdominal", "Acidez", "Estreñimiento"], correcta: 0 },
+    // Agregadas: Aceite de ricino
+    { pregunta: "¿Familia farmacológica del Aceite de ricino?", opciones: ["Laxante estimulante", "Antiemético", "Procinético", "Antiespasmódico"], correcta: 0 },
+    { pregunta: "Mecanismo principal del Aceite de ricino como laxante:", opciones: ["Estimula contracciones intestinales por ácido ricinoleico", "Aumenta volumen fecal (osmótico)", "Suaviza heces (emoliente)", "Reduce secreción intestinal"], correcta: 0 },
+    { pregunta: "Uso principal del Aceite de ricino:", opciones: ["Estreñimiento ocasional / preparación preoperatoria", "Náuseas crónicas", "Diarrea", "Úlcera gástrica"], correcta: 0 }
   ],
   "Respiratorios y Broncodilatadores": [
     { pregunta: "Salbutamol familia:", opciones: ["Beta-2 agonista corto acción", "Anticolinérgico", "Corticoide", "Mucolítico"], correcta: 0 },
@@ -206,13 +212,13 @@ const bancoPreguntas = {
   ]
 };
 
-// Resto del script exactamente igual al anterior (sonidos, shuffle, elegirTemaNoRepetido, girarRuleta, mostrarPregunta, etc.)
-// Copia desde "const soundSpin = ..." hasta el final del script de la versión anterior que te di
+// ────────────────────────────────────────────────
+// ────────────── Resto del script ─────────────────
+// ────────────────────────────────────────────────
 
 const soundSpin = document.getElementById("soundSpin");
 const soundCorrect = document.getElementById("soundCorrect");
 const soundIncorrect = document.getElementById("soundIncorrect");
-
 const ruleta = document.getElementById("ruleta");
 const zonaPregunta = document.getElementById("zonaPregunta");
 const textoPregunta = document.getElementById("textoPregunta");
@@ -284,16 +290,12 @@ function girarRuleta() {
   btnGirar.disabled = true;
   zonaPregunta.style.display = "none";
   btnSiguiente.style.display = "none";
-
   soundSpin.currentTime = 0;
   soundSpin.play().catch(() => {});
-
   const vueltas = 4 + Math.floor(Math.random() * 5);
   const anguloExtra = Math.random() * 360;
   const rotacionTotal = vueltas * 360 + anguloExtra;
-
   ruleta.style.transform = `rotate(${rotacionTotal}deg)`;
-
   setTimeout(() => {
     temaActual = elegirTemaNoRepetido();
     preguntasTema = shuffleArray(bancoPreguntas[temaActual]);
@@ -311,18 +313,14 @@ function mostrarPregunta() {
     mostrarModal("Fin del tema", mensaje);
     return;
   }
-
   const p = preguntasTema[indicePregunta];
   textoPregunta.textContent = p.pregunta;
   progreso.textContent = `Pregunta ${indicePregunta + 1} de ${totalEnTema} – ${temaActual}`;
-
   const opcionesBarajadas = shuffleArray(p.opciones);
   const indiceCorrecto = opcionesBarajadas.indexOf(p.opciones[p.correcta]);
-
   opcionesDiv.innerHTML = "";
   zonaPregunta.style.display = "block";
   btnSiguiente.style.display = "none";
-
   opcionesBarajadas.forEach((op, i) => {
     const div = document.createElement("div");
     div.className = "opcion";

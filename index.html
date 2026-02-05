@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruleta de Medicamentos Hospitalarios 🏥💕</title>
+  <title>Ruleta de Medicamentos Hospitalarios</title>
   <style>
     :root {
       --primary: #3b82f6;
@@ -135,13 +135,12 @@
       text-align: center;
     }
     .modal-content h2 { margin: 0 0 16px; color: var(--dark); }
-    .corazones { font-size: 1.8rem; margin: 12px 0; }
   </style>
 </head>
 <body>
 
-<h1>Ruleta de Medicamentos Hospitalarios 🏥</h1>
-<p class="subtitle">Familia farmacológica y función principal – ¡Para mi amor! 💕</p>
+<h1>Ruleta de Medicamentos Hospitalarios</h1>
+<p class="subtitle">Familia farmacológica y función principal</p>
 
 <div class="ruleta-container">
   <div class="flecha"></div>
@@ -149,7 +148,7 @@
 </div>
 
 <div class="controls">
-  <button id="btnGirar" class="btn-primary">Girar ruleta 🎡</button>
+  <button id="btnGirar" class="btn-primary">Girar ruleta</button>
 </div>
 
 <div class="pregunta-container" id="zonaPregunta">
@@ -157,7 +156,7 @@
   <h2 id="textoPregunta"></h2>
   <div id="opciones"></div>
   <div style="margin-top: 24px;">
-    <button id="btnSiguiente" class="btn-primary" style="display:none;">Siguiente →</button>
+    <button id="btnSiguiente" class="btn-primary" style="display:none;">Siguiente pregunta</button>
   </div>
 </div>
 
@@ -165,10 +164,20 @@
   <div class="modal-content">
     <h2 id="tituloFin"></h2>
     <p id="textoFin"></p>
-    <div class="corazones" id="corazones"></div>
     <button class="btn-primary" onclick="cerrarModalYContinuar()">Girar de nuevo</button>
   </div>
 </div>
+
+<!-- Sonidos (archivos públicos gratuitos - puedes cambiarlos por archivos propios en tu repo) -->
+<audio id="soundSpin" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1938.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundCorrect" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+</audio>
+<audio id="soundIncorrect" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 // ────────────────────────────────────────────── Datos ──────────────────────────────────────────────
@@ -177,7 +186,7 @@ const temas = [
   "Endocrinos", "Gastrointestinales", "Respiratorios"
 ];
 
-const bancoPreguntas = { /* Tus preguntas originales – puedes agregar más */
+const bancoPreguntas = {
   "Analgésicos": [
     { pregunta: "¿A qué familia pertenece el paracetamol?", opciones: ["Analgésico-antipirético", "Antibiótico", "Corticoide"], correcta: 0 },
     { pregunta: "Función principal de la morfina:", opciones: ["Analgésico opioide potente", "Antiinflamatorio", "Antipirético"], correcta: 0 },
@@ -211,7 +220,11 @@ const bancoPreguntas = { /* Tus preguntas originales – puedes agregar más */
   ]
 };
 
-// ────────────────────────────────────────────── Estado ──────────────────────────────────────────────
+// ────────────────────────────────────────────── Elementos DOM y estado ──────────────────────────────────────────────
+const soundSpin = document.getElementById("soundSpin");
+const soundCorrect = document.getElementById("soundCorrect");
+const soundIncorrect = document.getElementById("soundIncorrect");
+
 const ruleta = document.getElementById("ruleta");
 const zonaPregunta = document.getElementById("zonaPregunta");
 const textoPregunta = document.getElementById("textoPregunta");
@@ -222,32 +235,30 @@ const progreso = document.getElementById("progreso");
 const modal = document.getElementById("modalFinTema");
 const tituloFin = document.getElementById("tituloFin");
 const textoFin = document.getElementById("textoFin");
-const corazonesDiv = document.getElementById("corazones");
 
 let preguntasTema = [];
 let indicePregunta = 0;
 let temaActual = "";
 let aciertos = 0;
 let totalEnTema = 0;
-const temasUsadosRecientes = []; // evita repetir tema consecutivo
-const MAX_RECientes = 2; // cuántos temas atrás recordar
+const temasUsadosRecientes = [];
+const MAX_RECientes = 2;
 
 const coloresSectores = ["#bfdbfe","#bbf7d0","#fed7aa","#fecdd3","#e9d5ff","#a7f3d0"];
 
-// ────────────────────────────────────────────── Crear ruleta ──────────────────────────────────────────────
+// Crear sectores
 temas.forEach((tema, i) => {
   const sector = document.createElement("div");
   sector.className = "sector";
   sector.style.transform = `rotate(${i * (360 / temas.length)}deg)`;
   sector.style.background = coloresSectores[i % coloresSectores.length];
-
   const span = document.createElement("span");
   span.textContent = tema;
   sector.appendChild(span);
   ruleta.appendChild(sector);
 });
 
-// ────────────────────────────────────────────── Utilidades ──────────────────────────────────────────────
+// ────────────────────────────────────────────── Funciones auxiliares ──────────────────────────────────────────────
 function shuffleArray(arr) {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -260,7 +271,6 @@ function shuffleArray(arr) {
 function elegirTemaNoRepetido() {
   let candidatos = temas.filter(t => !temasUsadosRecientes.includes(t));
   if (candidatos.length === 0) {
-    // Si todos se usaron → reiniciar historial
     temasUsadosRecientes.length = 0;
     candidatos = [...temas];
   }
@@ -271,10 +281,9 @@ function elegirTemaNoRepetido() {
   return elegido;
 }
 
-function mostrarModal(titulo, texto, corazones = "") {
+function mostrarModal(titulo, texto) {
   tituloFin.textContent = titulo;
   textoFin.textContent = texto;
-  corazonesDiv.textContent = corazones;
   modal.style.display = "flex";
 }
 
@@ -285,13 +294,16 @@ function cerrarModalYContinuar() {
   btnGirar.disabled = false;
 }
 
-// ────────────────────────────────────────────── Lógica principal ──────────────────────────────────────────────
+// ────────────────────────────────────────────── Lógica del juego ──────────────────────────────────────────────
 function girarRuleta() {
   btnGirar.disabled = true;
   zonaPregunta.style.display = "none";
   btnSiguiente.style.display = "none";
 
-  const vueltas = 4 + Math.floor(Math.random() * 5); // 4–8 vueltas
+  soundSpin.currentTime = 0;
+  soundSpin.play().catch(() => {}); // Ignorar errores de autoplay en algunos navegadores
+
+  const vueltas = 4 + Math.floor(Math.random() * 5);
   const anguloExtra = Math.random() * 360;
   const rotacionTotal = vueltas * 360 + anguloExtra;
 
@@ -310,20 +322,14 @@ function girarRuleta() {
 function mostrarPregunta() {
   if (indicePregunta >= totalEnTema) {
     const porcentaje = Math.round((aciertos / totalEnTema) * 100);
-    let mensaje = `¡Terminaste "${temaActual}"! 🎉\n`;
-    mensaje += `Aciertos: ${aciertos}/${totalEnTema} (${porcentaje}%)\n\n`;
-    if (porcentaje >= 90) mensaje += "¡Eres una genia mi amor! Te amo muchísimo 😍💖";
-    else if (porcentaje >= 70) mensaje += "¡Muy bien mi vida! Vas increíble 🔥";
-    else mensaje += "¡Sigue practicando mi reina! Ya casi lo dominas ❤️";
-
-    let hearts = "❤️".repeat(Math.min(Math.ceil(porcentaje / 20), 5));
-    mostrarModal("¡Excelente!", mensaje, hearts);
+    const mensaje = `Tema "${temaActual}" completado.\nAciertos: ${aciertos} / ${totalEnTema} (${porcentaje}%)`;
+    mostrarModal("Fin del tema", mensaje);
     return;
   }
 
   const p = preguntasTema[indicePregunta];
   textoPregunta.textContent = p.pregunta;
-  progreso.textContent = `Pregunta ${indicePregunta + 1} de ${totalEnTema} – Tema: ${temaActual}`;
+  progreso.textContent = `Pregunta ${indicePregunta + 1} de ${totalEnTema} – ${temaActual}`;
 
   const opcionesBarajadas = shuffleArray(p.opciones);
   const indiceCorrecto = opcionesBarajadas.indexOf(p.opciones[p.correcta]);
@@ -341,9 +347,13 @@ function mostrarPregunta() {
       if (i === indiceCorrecto) {
         div.classList.add("correcta");
         aciertos++;
+        soundCorrect.currentTime = 0;
+        soundCorrect.play().catch(() => {});
       } else {
         div.classList.add("incorrecta");
         opcionesDiv.children[indiceCorrecto].classList.add("correcta");
+        soundIncorrect.currentTime = 0;
+        soundIncorrect.play().catch(() => {});
       }
       btnSiguiente.style.display = "inline-block";
     };
@@ -356,7 +366,7 @@ function siguientePregunta() {
   mostrarPregunta();
 }
 
-// ────────────────────────────────────────────── Eventos iniciales ──────────────────────────────────────────────
+// Eventos
 btnGirar.onclick = girarRuleta;
 btnSiguiente.onclick = siguientePregunta;
 </script>
